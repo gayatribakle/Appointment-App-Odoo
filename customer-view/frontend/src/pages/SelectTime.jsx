@@ -3,39 +3,51 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import Stepper from '../components/Stepper';
 import TimeSlot from '../components/TimeSlot';
+import { useAppointments } from '../context/AppointmentContext';
 
 const ALL_SLOTS = [
-  { time: '9:00 AM', booked: false },
-  { time: '9:30 AM', booked: true  },
-  { time: '10:00 AM', booked: false },
-  { time: '10:30 AM', booked: false },
-  { time: '11:00 AM', booked: true  },
-  { time: '11:30 AM', booked: false },
-  { time: '12:00 PM', booked: true  },
-  { time: '12:30 PM', booked: false },
-  { time: '2:00 PM',  booked: false },
-  { time: '2:30 PM',  booked: false },
-  { time: '3:00 PM',  booked: true  },
-  { time: '3:30 PM',  booked: false },
-  { time: '4:00 PM',  booked: false },
-  { time: '4:30 PM',  booked: true  },
-  { time: '5:00 PM',  booked: false },
-  { time: '5:30 PM',  booked: false },
+  { time: '9:00 AM' },
+  { time: '9:30 AM' },
+  { time: '10:00 AM' },
+  { time: '10:30 AM' },
+  { time: '11:00 AM' },
+  { time: '11:30 AM' },
+  { time: '12:00 PM' },
+  { time: '12:30 PM' },
+  { time: '2:00 PM' },
+  { time: '2:30 PM' },
+  { time: '3:00 PM' },
+  { time: '3:30 PM' },
+  { time: '4:00 PM' },
+  { time: '4:30 PM' },
+  { time: '5:00 PM' },
+  { time: '5:30 PM' },
 ];
 
 export default function SelectTime() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { appointments } = useAppointments();
   const { service, provider, date } = location.state || {};
   const [selectedTime, setSelectedTime] = useState('');
+
+  // Calculate which slots are already booked for this provider on this date
+  const bookedSlots = appointments
+    .filter(a => a.date === date && a.provider === provider?.name && a.status !== 'cancelled')
+    .map(a => a.time);
+
+  const dynamicSlots = ALL_SLOTS.map(slot => ({
+    ...slot,
+    booked: bookedSlots.includes(slot.time)
+  }));
 
   const handleNext = () => {
     if (!selectedTime) return;
     navigate('/book/intake', { state: { service, provider, date, time: selectedTime } });
   };
 
-  const amSlots = ALL_SLOTS.filter(s => s.time.includes('AM'));
-  const pmSlots = ALL_SLOTS.filter(s => s.time.includes('PM'));
+  const amSlots = dynamicSlots.filter(s => s.time.includes('AM'));
+  const pmSlots = dynamicSlots.filter(s => s.time.includes('PM'));
 
   return (
     <div className="app-layout">

@@ -13,7 +13,13 @@ export default function TimeSlot({ slots = [], selected, onSelect }) {
           <div
             key={slot.time}
             className={cls}
-            onClick={() => !slot.booked && onSelect && onSelect(slot.time)}
+            onClick={() => {
+              if (slot.booked) {
+                alert('Sorry, this slot is full. Please select another time.');
+              } else if (onSelect) {
+                onSelect(slot.time);
+              }
+            }}
           >
             {slot.time}
             {slot.booked && <div style={{ fontSize: 10, marginTop: 2, color: 'var(--text-secondary)' }}>Full</div>}
