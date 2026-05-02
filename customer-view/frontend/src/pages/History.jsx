@@ -4,11 +4,11 @@ import Sidebar from '../components/Sidebar';
 import Navbar from '../components/Navbar';
 
 const HISTORY = [
-  { id: 'APT-G7H8I9', service: 'Hair Cut & Styling',  provider: 'Salon by Neha',   date: '2026-04-28', time: '3:00 PM',  duration: 60, price: 413, rating: 5 },
-  { id: 'APT-J1K2L3', service: 'Yoga Session',         provider: 'Fit Life Studio', date: '2026-04-20', time: '7:00 AM',  duration: 60, price: 708, rating: 4 },
-  { id: 'APT-R1S2T3', service: 'General Consultation', provider: 'Dr. Priya Sharma',date: '2026-03-15', time: '10:30 AM', duration: 30, price: 590, rating: 5 },
-  { id: 'APT-U4V5W6', service: 'Skin Care Facial',     provider: 'Glow Clinic',     date: '2026-03-05', time: '2:00 PM',  duration: 75, price: 1121,rating: 4 },
-  { id: 'APT-X7Y8Z9', service: 'Eye Test',             provider: 'Dr. Ravi Kapoor', date: '2026-02-20', time: '9:00 AM',  duration: 30, price: 472, rating: 5 },
+  { id: 'APT-G7H8I9', service: 'Cardiology Assessment', provider: 'Dr. Neha Singh',   date: '2026-04-28', time: '3:00 PM',  duration: 60, price: 1500, rating: 5 },
+  { id: 'APT-J1K2L3', service: 'Orthopedic Visit',      provider: 'Dr. Vikas Patel',  date: '2026-04-20', time: '7:00 AM',  duration: 45, price: 1200, rating: 4 },
+  { id: 'APT-R1S2T3', service: 'General Consultation',  provider: 'Dr. Priya Sharma', date: '2026-03-15', time: '10:30 AM', duration: 30, price: 500, rating: 5 },
+  { id: 'APT-U4V5W6', service: 'Pediatric Visit',       provider: 'Dr. Sunita Rao',   date: '2026-03-05', time: '2:00 PM',  duration: 45, price: 600, rating: 4 },
+  { id: 'APT-X7Y8Z9', service: 'Vision Test',           provider: 'Dr. Ravi Kapoor',  date: '2026-02-20', time: '9:00 AM',  duration: 30, price: 400, rating: 5 },
 ];
 
 export default function History() {

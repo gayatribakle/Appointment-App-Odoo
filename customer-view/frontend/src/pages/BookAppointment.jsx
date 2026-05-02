@@ -4,10 +4,10 @@ import Sidebar from '../components/Sidebar';
 import Stepper from '../components/Stepper';
 
 const SERVICES = [
-  { id: 1, name: 'General Consultation', provider: 'Dr. Priya Sharma', duration: 30, price: 500,  category: 'Medical',  emoji: '🩺' },
-  { id: 2, name: 'Dental Checkup',        provider: 'Dr. Arjun Mehta',  duration: 45, price: 800,  category: 'Dental',   emoji: '🦷' },
-  { id: 3, name: 'Hair Cut & Styling',    provider: 'Salon by Neha',    duration: 60, price: 350,  category: 'Beauty',   emoji: '✂️' },
-  { id: 4, name: 'Deep Tissue Massage',   provider: 'Wellness Hub',     duration: 90, price: 1200, category: 'Wellness', emoji: '💆' },
+  { id: 1, name: 'General Consultation', provider: 'Dr. Priya Sharma', duration: 30, price: 500,  category: 'General',      emoji: '🩺' },
+  { id: 2, name: 'Dental Checkup',        provider: 'Dr. Arjun Mehta',  duration: 45, price: 800,  category: 'Dental',       emoji: '🦷' },
+  { id: 3, name: 'Cardiology Assessment', provider: 'Dr. Neha Singh',   duration: 60, price: 1500, category: 'Cardiology',   emoji: '❤️' },
+  { id: 4, name: 'Orthopedic Visit',      provider: 'Dr. Vikas Patel',  duration: 45, price: 1200, category: 'Orthopedics',  emoji: '🦴' },
 ];
 
 const PROVIDERS = {
@@ -20,12 +20,12 @@ const PROVIDERS = {
     { id:'p4', name:'Dr. Sneha Joshi',   specialty:'Orthodontist',      initials:'SJ', available: false },
   ],
   3: [
-    { id:'p5', name:'Neha Kapoor',       specialty:'Hair Stylist',      initials:'NK', available: true },
-    { id:'p6', name:'Priti Shah',        specialty:'Senior Stylist',    initials:'PS', available: true },
+    { id:'p5', name:'Dr. Neha Singh',    specialty:'Cardiologist',      initials:'NS', available: true },
+    { id:'p6', name:'Dr. Priti Shah',    specialty:'Senior Cardiologist',initials:'PS', available: true },
   ],
   4: [
-    { id:'p7', name:'Riya Menon',        specialty:'Massage Therapist', initials:'RM', available: true },
-    { id:'p8', name:'Ananya Das',        specialty:'Wellness Expert',   initials:'AD', available: true },
+    { id:'p7', name:'Dr. Vikas Patel',   specialty:'Orthopedic Surgeon', initials:'VP', available: true },
+    { id:'p8', name:'Dr. Ananya Das',    specialty:'Sports Medicine',    initials:'AD', available: true },
   ],
 };
 

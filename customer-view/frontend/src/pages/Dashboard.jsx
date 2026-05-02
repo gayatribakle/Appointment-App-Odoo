@@ -5,20 +5,20 @@ import Navbar from '../components/Navbar';
 import ServiceCard from '../components/ServiceCard';
 
 const SERVICES = [
-  { id: 1, name: 'General Consultation', provider: 'Dr. Priya Sharma',   duration: 30, price: 500,  category: 'Medical',  emoji: '🩺', rating: 4.8 },
-  { id: 2, name: 'Dental Checkup',        provider: 'Dr. Arjun Mehta',   duration: 45, price: 800,  category: 'Dental',   emoji: '🦷', rating: 4.7 },
-  { id: 3, name: 'Hair Cut & Styling',    provider: 'Salon by Neha',      duration: 60, price: 350,  category: 'Beauty',   emoji: '✂️', rating: 4.9 },
-  { id: 4, name: 'Deep Tissue Massage',   provider: 'Wellness Hub',       duration: 90, price: 1200, category: 'Wellness', emoji: '💆', rating: 4.6 },
-  { id: 5, name: 'Eye Test',              provider: 'Dr. Ravi Kapoor',    duration: 30, price: 400,  category: 'Medical',  emoji: '👁️', rating: 4.8 },
-  { id: 6, name: 'Yoga Session',          provider: 'Fit Life Studio',    duration: 60, price: 600,  category: 'Fitness',  emoji: '🧘', rating: 5.0 },
+  { id: 1, name: 'General Consultation', provider: 'Dr. Priya Sharma',   duration: 30, price: 500,  category: 'General',      emoji: '🩺', rating: 4.8 },
+  { id: 2, name: 'Dental Checkup',        provider: 'Dr. Arjun Mehta',   duration: 45, price: 800,  category: 'Dental',       emoji: '🦷', rating: 4.7 },
+  { id: 3, name: 'Cardiology Assessment', provider: 'Dr. Neha Singh',    duration: 60, price: 1500, category: 'Cardiology',   emoji: '❤️', rating: 4.9 },
+  { id: 4, name: 'Orthopedic Visit',      provider: 'Dr. Vikas Patel',   duration: 45, price: 1200, category: 'Orthopedics',  emoji: '🦴', rating: 4.6 },
+  { id: 5, name: 'Vision Test',           provider: 'Dr. Ravi Kapoor',   duration: 30, price: 400,  category: 'Ophthalmology',emoji: '👁️', rating: 4.8 },
+  { id: 6, name: 'Pediatric Visit',       provider: 'Dr. Sunita Rao',    duration: 45, price: 600,  category: 'Pediatrics',   emoji: '👶', rating: 5.0 },
 ];
 
 const UPCOMING = [
   { id: 'u1', service: 'General Consultation', provider: 'Dr. Priya Sharma', date: '2026-05-10', time: '10:00 AM', status: 'Confirmed' },
-  { id: 'u2', service: 'Yoga Session',          provider: 'Fit Life Studio',  date: '2026-05-14', time: '7:00 AM',  status: 'Confirmed' },
+  { id: 'u2', service: 'Cardiology Assessment',provider: 'Dr. Neha Singh',   date: '2026-05-14', time: '7:00 AM',  status: 'Confirmed' },
 ];
 
-const CATEGORIES = ['All Services', 'Medical', 'Dental', 'Beauty', 'Wellness', 'Fitness'];
+const CATEGORIES = ['All Services', 'General', 'Dental', 'Cardiology', 'Orthopedics', 'Ophthalmology', 'Pediatrics'];
 
 export default function Dashboard() {
   const navigate = useNavigate();

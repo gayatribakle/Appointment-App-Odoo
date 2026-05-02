@@ -4,17 +4,17 @@ import Sidebar from '../components/Sidebar';
 import Navbar from '../components/Navbar';
 
 const ALL_SERVICES = [
-  { id: 1, name: 'General Consultation', provider: 'Dr. Priya Sharma',  duration: 30, price: 500,  category: 'Medical',  emoji: '🩺', rating: 4.8, reviews: 120 },
-  { id: 2, name: 'Dental Checkup',        provider: 'Dr. Arjun Mehta',  duration: 45, price: 800,  category: 'Dental',   emoji: '🦷', rating: 4.7, reviews: 89  },
-  { id: 3, name: 'Hair Cut & Styling',    provider: 'Salon by Neha',    duration: 60, price: 350,  category: 'Beauty',   emoji: '✂️', rating: 4.9, reviews: 210 },
-  { id: 4, name: 'Deep Tissue Massage',   provider: 'Wellness Hub',     duration: 90, price: 1200, category: 'Wellness', emoji: '💆', rating: 4.6, reviews: 75  },
-  { id: 5, name: 'Eye Test',              provider: 'Dr. Ravi Kapoor',  duration: 30, price: 400,  category: 'Medical',  emoji: '👁️', rating: 4.8, reviews: 95  },
-  { id: 6, name: 'Yoga Session',          provider: 'Fit Life Studio',  duration: 60, price: 600,  category: 'Fitness',  emoji: '🧘', rating: 5.0, reviews: 180 },
-  { id: 7, name: 'Skin Care Facial',      provider: 'Glow Clinic',      duration: 75, price: 950,  category: 'Beauty',   emoji: '🧖', rating: 4.7, reviews: 140 },
-  { id: 8, name: 'Physiotherapy',         provider: 'Dr. Sunita Rao',   duration: 45, price: 700,  category: 'Medical',  emoji: '🏃', rating: 4.9, reviews: 60  },
+  { id: 1, name: 'General Consultation', provider: 'Dr. Priya Sharma',  duration: 30, price: 500,  category: 'General',      emoji: '🩺', rating: 4.8, reviews: 120 },
+  { id: 2, name: 'Dental Checkup',        provider: 'Dr. Arjun Mehta',  duration: 45, price: 800,  category: 'Dental',       emoji: '🦷', rating: 4.7, reviews: 89  },
+  { id: 3, name: 'Cardiology Assessment', provider: 'Dr. Neha Singh',   duration: 60, price: 1500, category: 'Cardiology',   emoji: '❤️', rating: 4.9, reviews: 210 },
+  { id: 4, name: 'Orthopedic Visit',      provider: 'Dr. Vikas Patel',  duration: 45, price: 1200, category: 'Orthopedics',  emoji: '🦴', rating: 4.6, reviews: 75  },
+  { id: 5, name: 'Vision Test',           provider: 'Dr. Ravi Kapoor',  duration: 30, price: 400,  category: 'Ophthalmology',emoji: '👁️', rating: 4.8, reviews: 95  },
+  { id: 6, name: 'Pediatric Visit',       provider: 'Dr. Sunita Rao',   duration: 45, price: 600,  category: 'Pediatrics',   emoji: '👶', rating: 5.0, reviews: 180 },
+  { id: 7, name: 'Dermatology Consult',   provider: 'Dr. Rakesh Verma', duration: 30, price: 950,  category: 'Dermatology',  emoji: ' छाला', rating: 4.7, reviews: 140 },
+  { id: 8, name: 'ENT Checkup',           provider: 'Dr. Anil Gupta',   duration: 30, price: 700,  category: 'ENT',          emoji: '👂', rating: 4.9, reviews: 60  },
 ];
 
-const CATS = ['All', 'Medical', 'Dental', 'Beauty', 'Wellness', 'Fitness'];
+const CATS = ['All', 'General', 'Dental', 'Cardiology', 'Orthopedics', 'Ophthalmology', 'Pediatrics'];
 
 export default function Services() {
   const navigate = useNavigate();
