@@ -447,7 +447,8 @@ body.dark-mode {
 .calendar-day.available:hover { background: var(--primary-bg); color: var(--primary); }
 .calendar-day.selected { background: var(--primary); color: white; font-weight: 600; }
 .calendar-day.disabled { color: #d1d5db; cursor: not-allowed; }
-.calendar-day.today { font-weight: 700; color: var(--primary); }
+.calendar-day.today:not(.selected) { border: 2px solid var(--primary); font-weight: 700; color: var(--primary); }
+.calendar-day.today.selected { background: var(--primary); color: white; }
 
 /* Time Slots */
 .time-slots-grid {

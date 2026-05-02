@@ -68,11 +68,11 @@ export default function Calendar({ selectedDate, onSelect, availableDates = [] }
           const isPast = new Date(dateStr) < new Date(today.toDateString());
           const isAvailable = availableDates.length === 0 ? !isPast : availableDates.includes(dateStr);
 
-          let cls = 'calendar-day ';
-          if (isSelected) cls += 'selected';
-          else if (isPast) cls += 'disabled';
-          else if (isAvailable) cls += isToday ? 'available today' : 'available';
-          else cls += 'disabled';
+          let cls = 'calendar-day';
+          if (isSelected) cls += ' selected';
+          if (isToday) cls += ' today';
+          if (isPast || !isAvailable) cls += ' disabled';
+          if (isAvailable && !isPast) cls += ' available';
 
           return (
             <div
