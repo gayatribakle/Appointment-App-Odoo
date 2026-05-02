@@ -201,10 +201,10 @@ export default function Payment() {
             </div>
 
             <div style={{
-              background: '#f0fdf4', border: '1px solid #86efac',
-              borderRadius: 10, padding: '14px 16px', fontSize: 13, color: '#166534',
+              background: 'var(--primary-bg)', border: '1px solid var(--border)',
+              borderRadius: 10, padding: '14px 16px', fontSize: 13, color: 'var(--text)',
             }}>
-              ✅ Free cancellation up to 24 hours before your appointment.
+              <strong>📌 Policy:</strong> You cannot cancel the appointment within 2 hours of the scheduled time. Rescheduling must be done at least 6 hours in advance.
             </div>
           </div>
         </div>

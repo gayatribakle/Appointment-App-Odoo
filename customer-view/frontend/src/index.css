@@ -28,6 +28,17 @@ body {
   background: var(--bg);
   color: var(--text);
   line-height: 1.5;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+body.dark-mode {
+  --bg: #111827;
+  --white: #1f2937;
+  --text: #f9fafb;
+  --text-secondary: #9ca3af;
+  --border: #374151;
+  --primary-bg: #3730a3;
+  --primary: #818cf8;
 }
 
 /* Auth Pages */

@@ -70,10 +70,11 @@ export default function Confirmation() {
             </div>
 
             {/* Reminder */}
-            <div className="card" style={{ background: '#eff6ff', borderColor: '#bfdbfe', marginBottom: 20 }}>
-              <div style={{ fontSize: 14, color: '#1e40af' }}>
+            <div className="card" style={{ background: 'var(--primary-bg)', borderColor: 'var(--border)', marginBottom: 20 }}>
+              <div style={{ fontSize: 14, color: 'var(--text)' }}>
                 <strong>📌 Reminder:</strong> Please arrive 10 minutes before your scheduled appointment time.
-                If you need to reschedule, do so at least 24 hours in advance.
+                <br/><br/>
+                <strong>Policy:</strong> You cannot cancel the appointment within 2 hours of the scheduled time. Rescheduling must be done at least 6 hours in advance.
               </div>
             </div>
 
