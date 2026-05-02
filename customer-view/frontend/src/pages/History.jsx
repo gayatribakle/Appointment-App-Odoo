@@ -24,15 +24,15 @@ export default function History() {
 
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
             <div>
-              <h1 style={{ fontSize: 22, fontWeight: 700, color: '#111827' }}>Booking History</h1>
-              <p style={{ fontSize: 14, color: '#6b7280', marginTop: 3 }}>Your past completed appointments</p>
+              <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--text)' }}>Booking History</h1>
+              <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginTop: 3 }}>Your past completed appointments</p>
             </div>
           </div>
 
           {/* Summary cards */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginBottom: 28 }}>
             {[
-              { label: 'Total Bookings',  value: HISTORY.length,      icon: '📋', color: '#4f46e5', bg: '#eef2ff' },
+              { label: 'Total Bookings',  value: HISTORY.length,      icon: '📋', color: 'var(--primary)', bg: 'var(--primary-bg)' },
               { label: 'Total Spent',     value: `₹${totalSpent}`,    icon: '💰', color: '#059669', bg: '#d1fae5' },
               { label: 'Avg. Rating',     value: '4.6 ⭐',             icon: '⭐', color: '#d97706', bg: '#fef3c7' },
             ].map((s) => (
@@ -40,7 +40,7 @@ export default function History() {
                 <div style={{ width: 44, height: 44, borderRadius: 10, background: s.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22 }}>{s.icon}</div>
                 <div>
                   <div style={{ fontSize: 20, fontWeight: 700, color: s.color }}>{s.value}</div>
-                  <div style={{ fontSize: 13, color: '#6b7280' }}>{s.label}</div>
+                  <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>{s.label}</div>
                 </div>
               </div>
             ))}
@@ -51,10 +51,10 @@ export default function History() {
             {HISTORY.map((apt) => (
               <div key={apt.id} className="card" style={{ padding: '18px 22px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                  <div style={{ width: 48, height: 48, borderRadius: 12, background: '#eef2ff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, flexShrink: 0 }}>✅</div>
+                  <div style={{ width: 48, height: 48, borderRadius: 12, background: 'var(--primary-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, flexShrink: 0 }}>✅</div>
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontWeight: 700, fontSize: 15, color: '#111827', marginBottom: 4 }}>{apt.service}</div>
-                    <div style={{ fontSize: 13, color: '#6b7280' }}>
+                    <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--text)', marginBottom: 4 }}>{apt.service}</div>
+                    <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
                       👤 {apt.provider} &nbsp;·&nbsp; 📅 {apt.date} &nbsp;·&nbsp; ⏰ {apt.time}
                     </div>
                     <div style={{ marginTop: 6 }}>
@@ -62,8 +62,8 @@ export default function History() {
                     </div>
                   </div>
                   <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontWeight: 700, fontSize: 16, color: '#4f46e5' }}>₹{apt.price}</div>
-                    <div style={{ fontSize: 12, color: '#9ca3af', marginTop: 2 }}>{apt.id}</div>
+                    <div style={{ fontWeight: 700, fontSize: 16, color: 'var(--primary)' }}>₹{apt.price}</div>
+                    <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2 }}>{apt.id}</div>
                     <button
                       className="btn btn-outline btn-sm"
                       style={{ marginTop: 8 }}

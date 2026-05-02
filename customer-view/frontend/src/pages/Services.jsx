@@ -37,8 +37,8 @@ export default function Services() {
 
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
             <div>
-              <h1 style={{ fontSize: 22, fontWeight: 700, color: '#111827' }}>All Services</h1>
-              <p style={{ fontSize: 14, color: '#6b7280', marginTop: 3 }}>Browse our full catalogue of professional services</p>
+              <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--text)' }}>All Services</h1>
+              <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginTop: 3 }}>Browse our full catalogue of professional services</p>
             </div>
             <div className="search-box" style={{ minWidth: 240 }}>
               <span>🔍</span>
@@ -62,16 +62,16 @@ export default function Services() {
                 </div>
                 <div style={{ padding: 18 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
-                    <div style={{ fontWeight: 700, fontSize: 15, color: '#111827' }}>{s.name}</div>
-                    <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 999, background: '#eef2ff', color: '#4f46e5', fontWeight: 600 }}>{s.category}</span>
+                    <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--text)' }}>{s.name}</div>
+                    <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 999, background: 'var(--primary-bg)', color: 'var(--primary)', fontWeight: 600 }}>{s.category}</span>
                   </div>
-                  <div style={{ fontSize: 13, color: '#6b7280', marginBottom: 10 }}>👤 {s.provider}</div>
-                  <div style={{ display: 'flex', gap: 14, fontSize: 12, color: '#6b7280', marginBottom: 14 }}>
+                  <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 10 }}>👤 {s.provider}</div>
+                  <div style={{ display: 'flex', gap: 14, fontSize: 12, color: 'var(--text-secondary)', marginBottom: 14 }}>
                     <span>⏱ {s.duration} min</span>
                     <span>⭐ {s.rating} ({s.reviews} reviews)</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontWeight: 700, fontSize: 16, color: '#4f46e5' }}>₹{s.price}</span>
+                    <span style={{ fontWeight: 700, fontSize: 16, color: 'var(--primary)' }}>₹{s.price}</span>
                     <button className="btn btn-primary" style={{ width: 'auto', padding: '7px 18px', fontSize: 13 }}
                       onClick={() => navigate('/book', { state: { service: s } })}>
                       Book Now
@@ -83,7 +83,7 @@ export default function Services() {
           </div>
 
           {filtered.length === 0 && (
-            <div style={{ textAlign: 'center', color: '#9ca3af', padding: '60px 0' }}>No services found.</div>
+            <div style={{ textAlign: 'center', color: 'var(--text-secondary)', padding: '60px 0' }}>No services found.</div>
           )}
         </div>
       </div>

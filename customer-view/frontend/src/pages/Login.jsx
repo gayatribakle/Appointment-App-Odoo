@@ -66,7 +66,7 @@ export default function Login() {
           </button>
         </form>
 
-        <p className="text-center mt-4" style={{ fontSize: 14, color: '#6b7280' }}>
+        <p className="text-center mt-4" style={{ fontSize: 14, color: 'var(--text-secondary)' }}>
           Don't have an account?{' '}
           <span className="link" onClick={() => navigate('/signup')}>Create account</span>
         </p>

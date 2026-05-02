@@ -21,17 +21,17 @@ export default function SelectDate() {
       <div className="main-content">
 
         {/* Header with stepper */}
-        <div style={{ background: '#fff', borderBottom: '1px solid #e5e7eb', padding: '20px 28px' }}>
+        <div style={{ background: 'var(--white)', borderBottom: '1px solid #e5e7eb', padding: '20px 28px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
             <button
               onClick={() => navigate('/book', { state: { service } })}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', fontSize: 14 }}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', fontSize: 14 }}
             >
               ← Back
             </button>
             <div>
-              <div style={{ fontSize: 18, fontWeight: 700, color: '#111827' }}>Book Your Appointment</div>
-              <div style={{ fontSize: 12, color: '#6b7280' }}>Home / Book / Select Date</div>
+              <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)' }}>Book Your Appointment</div>
+              <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>Home / Book / Select Date</div>
             </div>
           </div>
           <Stepper currentStep={3} />
@@ -41,14 +41,14 @@ export default function SelectDate() {
           {/* Calendar */}
           <div className="card">
             <div className="card-title">Choose an Available Date</div>
-            <p style={{ fontSize: 14, color: '#6b7280', marginBottom: 20 }}>
+            <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 20 }}>
               Select a date for your appointment. Past dates are disabled.
             </p>
             <Calendar selectedDate={selectedDate} onSelect={setSelectedDate} />
 
-            <div style={{ display: 'flex', gap: 20, marginTop: 16, fontSize: 13, color: '#6b7280' }}>
+            <div style={{ display: 'flex', gap: 20, marginTop: 16, fontSize: 13, color: 'var(--text-secondary)' }}>
               <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <span style={{ width: 12, height: 12, background: '#4f46e5', borderRadius: 3, display: 'inline-block' }} />
+                <span style={{ width: 12, height: 12, background: 'var(--primary)', borderRadius: 3, display: 'inline-block' }} />
                 Selected
               </span>
               <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -56,7 +56,7 @@ export default function SelectDate() {
                 Today
               </span>
               <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <span style={{ width: 12, height: 12, background: '#e5e7eb', borderRadius: 3, display: 'inline-block' }} />
+                <span style={{ width: 12, height: 12, background: 'var(--border)', borderRadius: 3, display: 'inline-block' }} />
                 Unavailable
               </span>
             </div>
@@ -91,7 +91,7 @@ export default function SelectDate() {
             </div>
             <div className="summary-row">
               <span className="label">Date</span>
-              <span className="value" style={{ color: '#4f46e5' }}>{selectedDate || 'Not selected'}</span>
+              <span className="value" style={{ color: 'var(--primary)' }}>{selectedDate || 'Not selected'}</span>
             </div>
             <div className="summary-row">
               <span className="label">Price</span>

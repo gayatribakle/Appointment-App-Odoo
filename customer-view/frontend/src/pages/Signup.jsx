@@ -96,13 +96,13 @@ export default function Signup() {
         alignItems: 'center',
         justifyContent: 'center',
         padding: '48px 48px',
-        background: '#fff',
+        background: 'var(--white)',
       }}>
         <div style={{ width: '100%', maxWidth: 380 }}>
-          <h1 style={{ fontSize: 26, fontWeight: 700, color: '#111827', marginBottom: 6 }}>
+          <h1 style={{ fontSize: 26, fontWeight: 700, color: 'var(--text)', marginBottom: 6 }}>
             Create account
           </h1>
-          <p style={{ fontSize: 14, color: '#6b7280', marginBottom: 28 }}>
+          <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 28 }}>
             Already have an account?{' '}
             <span className="link" onClick={() => navigate('/login')}>Sign in</span>
           </p>
@@ -130,7 +130,7 @@ export default function Signup() {
             </button>
           </form>
 
-          <p style={{ fontSize: 12, color: '#9ca3af', textAlign: 'center', marginTop: 20 }}>
+          <p style={{ fontSize: 12, color: 'var(--text-secondary)', textAlign: 'center', marginTop: 20 }}>
             By creating an account you agree to our{' '}
             <span className="link" style={{ fontSize: 12 }}>Terms of Service</span>
             {' '}and{' '}

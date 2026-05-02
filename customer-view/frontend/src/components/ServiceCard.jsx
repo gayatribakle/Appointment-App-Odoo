@@ -18,7 +18,7 @@ export default function ServiceCard({ service }) {
           <span className="badge badge-indigo">{category}</span>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ fontWeight: 700, fontSize: 16, color: '#4f46e5' }}>₹{price}</div>
+          <div style={{ fontWeight: 700, fontSize: 16, color: 'var(--primary)' }}>₹{price}</div>
           <button
             className="btn btn-primary"
             style={{ width: 'auto', padding: '8px 18px' }}

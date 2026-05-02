@@ -27,17 +27,17 @@ export default function IntakeForm() {
       <div className="main-content">
 
         {/* Header */}
-        <div style={{ background: '#fff', borderBottom: '1px solid #e5e7eb', padding: '20px 28px' }}>
+        <div style={{ background: 'var(--white)', borderBottom: '1px solid #e5e7eb', padding: '20px 28px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
             <button
               onClick={() => navigate('/book/time', { state: { service, provider, date } })}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', fontSize: 14 }}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', fontSize: 14 }}
             >
               ← Back
             </button>
             <div>
-              <div style={{ fontSize: 18, fontWeight: 700, color: '#111827' }}>Book Your Appointment</div>
-              <div style={{ fontSize: 12, color: '#6b7280' }}>Home / Book / Intake Form</div>
+              <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)' }}>Book Your Appointment</div>
+              <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>Home / Book / Intake Form</div>
             </div>
           </div>
           <Stepper currentStep={5} />
@@ -47,7 +47,7 @@ export default function IntakeForm() {
           {/* Form */}
           <div className="card">
             <div className="card-title">Patient Information</div>
-            <p style={{ fontSize: 14, color: '#6b7280', marginBottom: 22 }}>
+            <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 22 }}>
               Please fill in the required details before your appointment.
             </p>
 

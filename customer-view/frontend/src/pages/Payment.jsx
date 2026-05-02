@@ -38,17 +38,17 @@ export default function Payment() {
       <div className="main-content">
 
         {/* Header */}
-        <div style={{ background: '#fff', borderBottom: '1px solid #e5e7eb', padding: '20px 28px' }}>
+        <div style={{ background: 'var(--white)', borderBottom: '1px solid #e5e7eb', padding: '20px 28px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
             <button
               onClick={() => navigate('/book/intake', { state: { service, provider, date, time } })}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', fontSize: 14 }}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', fontSize: 14 }}
             >
               ← Back
             </button>
             <div>
-              <div style={{ fontSize: 18, fontWeight: 700, color: '#111827' }}>Book Your Appointment</div>
-              <div style={{ fontSize: 12, color: '#6b7280' }}>Home / Book / Payment</div>
+              <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)' }}>Book Your Appointment</div>
+              <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>Home / Book / Payment</div>
             </div>
           </div>
           <Stepper currentStep={6} />
@@ -68,9 +68,9 @@ export default function Payment() {
                   onClick={() => setPayMethod(m.id)}
                   style={{
                     flex: '1 1 calc(50% - 4px)', padding: '10px 0', borderRadius: 8, cursor: 'pointer',
-                    border: `2px solid ${payMethod === m.id ? '#4f46e5' : '#e5e7eb'}`,
-                    background: payMethod === m.id ? '#eef2ff' : '#fff',
-                    color: payMethod === m.id ? '#4f46e5' : '#374151',
+                    border: `2px solid ${payMethod === m.id ? 'var(--primary)' : 'var(--border)'}`,
+                    background: payMethod === m.id ? 'var(--primary-bg)' : 'var(--white)',
+                    color: payMethod === m.id ? 'var(--primary)' : '#374151',
                     fontWeight: 600, fontSize: 13, fontFamily: 'inherit',
                     transition: 'all 0.15s',
                   }}
@@ -149,7 +149,7 @@ export default function Payment() {
 
             {payMethod === 'offline' && (
               <form onSubmit={handlePay}>
-                <div style={{ background: '#f3f4f6', padding: '16px', borderRadius: '10px', marginBottom: '20px' }}>
+                <div style={{ background: 'var(--bg)', padding: '16px', borderRadius: '10px', marginBottom: '20px' }}>
                   <p style={{ fontSize: '14px', color: '#374151', margin: 0, lineHeight: 1.5 }}>
                     You can pay the total amount of <strong>₹{total}</strong> directly at the hospital reception either by Cash, Card, or UPI on the day of your appointment.
                   </p>
@@ -160,7 +160,7 @@ export default function Payment() {
               </form>
             )}
 
-            <div style={{ marginTop: 16, fontSize: 12, color: '#9ca3af', display: 'flex', alignItems: 'center', gap: 6 }}>
+            <div style={{ marginTop: 16, fontSize: 12, color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: 6 }}>
               🔒 Secured by 256-bit SSL encryption
             </div>
           </div>
@@ -196,7 +196,7 @@ export default function Payment() {
               </div>
               <div className="summary-row" style={{ paddingTop: 12 }}>
                 <span className="label" style={{ fontWeight: 700, fontSize: 15 }}>Total</span>
-                <span className="value summary-total" style={{ color: '#4f46e5' }}>₹{total}</span>
+                <span className="value summary-total" style={{ color: 'var(--primary)' }}>₹{total}</span>
               </div>
             </div>
 

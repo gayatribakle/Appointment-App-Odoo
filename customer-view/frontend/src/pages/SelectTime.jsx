@@ -43,17 +43,17 @@ export default function SelectTime() {
       <div className="main-content">
 
         {/* Header */}
-        <div style={{ background: '#fff', borderBottom: '1px solid #e5e7eb', padding: '20px 28px' }}>
+        <div style={{ background: 'var(--white)', borderBottom: '1px solid #e5e7eb', padding: '20px 28px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
             <button
               onClick={() => navigate('/book/date', { state: { service, provider } })}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', fontSize: 14 }}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', fontSize: 14 }}
             >
               ← Back
             </button>
             <div>
-              <div style={{ fontSize: 18, fontWeight: 700, color: '#111827' }}>Book Your Appointment</div>
-              <div style={{ fontSize: 12, color: '#6b7280' }}>Home / Book / Select Time</div>
+              <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)' }}>Book Your Appointment</div>
+              <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>Home / Book / Select Time</div>
             </div>
           </div>
           <Stepper currentStep={4} />
@@ -67,7 +67,7 @@ export default function SelectTime() {
             {/* Legend */}
             <div style={{ display: 'flex', gap: 20, marginBottom: 20, fontSize: 13 }}>
               <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <span style={{ width: 12, height: 12, background: '#4f46e5', borderRadius: 3, display: 'inline-block' }} />
+                <span style={{ width: 12, height: 12, background: 'var(--primary)', borderRadius: 3, display: 'inline-block' }} />
                 Selected
               </span>
               <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -75,15 +75,15 @@ export default function SelectTime() {
                 Available ({ALL_SLOTS.filter(s => !s.booked).length})
               </span>
               <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <span style={{ width: 12, height: 12, background: '#f3f4f6', borderRadius: 3, display: 'inline-block' }} />
+                <span style={{ width: 12, height: 12, background: 'var(--bg)', borderRadius: 3, display: 'inline-block' }} />
                 Booked ({ALL_SLOTS.filter(s => s.booked).length})
               </span>
             </div>
 
-            <div style={{ fontWeight: 600, fontSize: 13, color: '#6b7280', marginBottom: 8 }}>🌅 Morning</div>
+            <div style={{ fontWeight: 600, fontSize: 13, color: 'var(--text-secondary)', marginBottom: 8 }}>🌅 Morning</div>
             <TimeSlot slots={amSlots} selected={selectedTime} onSelect={setSelectedTime} />
 
-            <div style={{ fontWeight: 600, fontSize: 13, color: '#6b7280', margin: '16px 0 8px' }}>☀️ Afternoon & Evening</div>
+            <div style={{ fontWeight: 600, fontSize: 13, color: 'var(--text-secondary)', margin: '16px 0 8px' }}>☀️ Afternoon & Evening</div>
             <TimeSlot slots={pmSlots} selected={selectedTime} onSelect={setSelectedTime} />
 
             <div className="step-actions" style={{ marginTop: 24 }}>
@@ -116,7 +116,7 @@ export default function SelectTime() {
             </div>
             <div className="summary-row">
               <span className="label">Time</span>
-              <span className="value" style={{ color: '#4f46e5' }}>{selectedTime || 'Not selected'}</span>
+              <span className="value" style={{ color: 'var(--primary)' }}>{selectedTime || 'Not selected'}</span>
             </div>
             <div className="summary-row">
               <span className="label">Price</span>

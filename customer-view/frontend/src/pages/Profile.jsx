@@ -42,9 +42,9 @@ export default function Profile() {
                 color: 'white', fontWeight: 700, fontSize: 32, flexShrink: 0,
               }}>JD</div>
               <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: 700, fontSize: 20, color: '#111827' }}>{form.name}</div>
-                <div style={{ fontSize: 14, color: '#6b7280', marginTop: 4 }}>{form.email}</div>
-                <div style={{ fontSize: 13, color: '#6b7280', marginTop: 2 }}>Customer · Member since May 2025</div>
+                <div style={{ fontWeight: 700, fontSize: 20, color: 'var(--text)' }}>{form.name}</div>
+                <div style={{ fontSize: 14, color: 'var(--text-secondary)', marginTop: 4 }}>{form.email}</div>
+                <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 2 }}>Customer · Member since May 2025</div>
               </div>
               <button
                 className="btn btn-outline"

@@ -51,7 +51,7 @@ export default function BookAppointment() {
 
         {/* Custom header matching screenshot */}
         <div style={{
-          background: '#fff',
+          background: 'var(--white)',
           borderBottom: '1px solid #e5e7eb',
           padding: '20px 28px',
         }}>
@@ -60,14 +60,14 @@ export default function BookAppointment() {
               onClick={() => navigate('/dashboard')}
               style={{
                 background: 'none', border: 'none', cursor: 'pointer',
-                color: '#6b7280', fontSize: 14, display: 'flex', alignItems: 'center', gap: 4,
+                color: 'var(--text-secondary)', fontSize: 14, display: 'flex', alignItems: 'center', gap: 4,
               }}
             >
               ← Back
             </button>
             <div>
-              <div style={{ fontSize: 18, fontWeight: 700, color: '#111827' }}>Book Your Appointment</div>
-              <div style={{ fontSize: 12, color: '#6b7280' }}>Home / Book Appointment</div>
+              <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)' }}>Book Your Appointment</div>
+              <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>Home / Book Appointment</div>
             </div>
           </div>
           <Stepper currentStep={1} />
@@ -90,35 +90,35 @@ export default function BookAppointment() {
                       alignItems: 'center',
                       gap: 14,
                       padding: '14px 16px',
-                      border: `2px solid ${isSelected ? '#4f46e5' : '#e5e7eb'}`,
+                      border: `2px solid ${isSelected ? 'var(--primary)' : 'var(--border)'}`,
                       borderRadius: 10,
                       cursor: 'pointer',
-                      background: isSelected ? '#eef2ff' : '#fafafa',
+                      background: isSelected ? 'var(--primary-bg)' : '#fafafa',
                       transition: 'all 0.15s',
                     }}
                   >
                     <div style={{
                       width: 44, height: 44, borderRadius: 10,
-                      background: isSelected ? '#c7d2fe' : '#e5e7eb',
+                      background: isSelected ? 'var(--primary-light)' : 'var(--border)',
                       display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22,
                     }}>
                       {s.emoji}
                     </div>
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontWeight: 600, fontSize: 14, color: '#111827' }}>{s.name}</div>
-                      <div style={{ fontSize: 12, color: '#6b7280', marginTop: 2 }}>
+                      <div style={{ fontWeight: 600, fontSize: 14, color: 'var(--text)' }}>{s.name}</div>
+                      <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2 }}>
                         {s.category} · {s.duration} min
                       </div>
                     </div>
-                    <div style={{ fontWeight: 700, fontSize: 15, color: '#4f46e5' }}>₹{s.price}</div>
+                    <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--primary)' }}>₹{s.price}</div>
                     <div style={{
                       width: 20, height: 20, borderRadius: '50%',
-                      border: `2px solid ${isSelected ? '#4f46e5' : '#d1d5db'}`,
-                      background: isSelected ? '#4f46e5' : '#fff',
+                      border: `2px solid ${isSelected ? 'var(--primary)' : 'var(--border)'}`,
+                      background: isSelected ? 'var(--primary)' : 'var(--white)',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       flexShrink: 0,
                     }}>
-                      {isSelected && <span style={{ color: '#fff', fontSize: 11 }}>✓</span>}
+                      {isSelected && <span style={{ color: 'var(--white)', fontSize: 11 }}>✓</span>}
                     </div>
                   </div>
                 );
@@ -138,27 +138,27 @@ export default function BookAppointment() {
                       key={p.id}
                       onClick={() => p.available && setSelectedProvider(p)}
                       style={{
-                        border: `2px solid ${isSelected ? '#4f46e5' : '#e5e7eb'}`,
+                        border: `2px solid ${isSelected ? 'var(--primary)' : 'var(--border)'}`,
                         borderRadius: 12,
                         padding: '18px 14px',
                         textAlign: 'center',
                         cursor: p.available ? 'pointer' : 'not-allowed',
-                        background: isSelected ? '#eef2ff' : p.available ? '#fff' : '#f9fafb',
+                        background: isSelected ? 'var(--primary-bg)' : p.available ? 'var(--white)' : 'var(--bg)',
                         opacity: p.available ? 1 : 0.55,
                         transition: 'all 0.15s',
                       }}
                     >
                       <div style={{
                         width: 52, height: 52, borderRadius: '50%',
-                        background: isSelected ? '#4f46e5' : '#6366f1',
+                        background: isSelected ? 'var(--primary)' : '#6366f1',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        color: '#fff', fontWeight: 700, fontSize: 18,
+                        color: 'var(--white)', fontWeight: 700, fontSize: 18,
                         margin: '0 auto 10px',
                       }}>
                         {p.initials}
                       </div>
-                      <div style={{ fontWeight: 600, fontSize: 14, color: '#111827' }}>{p.name}</div>
-                      <div style={{ fontSize: 12, color: '#6b7280', marginTop: 3 }}>{p.specialty}</div>
+                      <div style={{ fontWeight: 600, fontSize: 14, color: 'var(--text)' }}>{p.name}</div>
+                      <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 3 }}>{p.specialty}</div>
                       <div style={{ marginTop: 8 }}>
                         {p.available
                           ? <span className="badge badge-green">Available</span>

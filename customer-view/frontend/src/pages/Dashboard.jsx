@@ -42,8 +42,8 @@ export default function Dashboard() {
           {/* Header row */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
             <div>
-              <h1 style={{ fontSize: 22, fontWeight: 700, color: '#111827' }}>Discover Services</h1>
-              <p style={{ fontSize: 14, color: '#6b7280', marginTop: 3 }}>
+              <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--text)' }}>Discover Services</h1>
+              <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginTop: 3 }}>
                 Find and book from our network of professional providers
               </p>
             </div>
@@ -81,7 +81,7 @@ export default function Dashboard() {
 
           {/* Services grid */}
           {filtered.length === 0 ? (
-            <div style={{ textAlign: 'center', color: '#9ca3af', padding: '60px 0' }}>
+            <div style={{ textAlign: 'center', color: 'var(--text-secondary)', padding: '60px 0' }}>
               No services found.
             </div>
           ) : (
@@ -94,11 +94,11 @@ export default function Dashboard() {
 
           {/* Upcoming Appointments */}
           <div style={{ marginTop: 36 }}>
-            <h2 style={{ fontSize: 17, fontWeight: 700, color: '#111827', marginBottom: 14 }}>
+            <h2 style={{ fontSize: 17, fontWeight: 700, color: 'var(--text)', marginBottom: 14 }}>
               Upcoming Appointments
             </h2>
             {UPCOMING.length === 0 ? (
-              <div className="card" style={{ textAlign: 'center', color: '#9ca3af', padding: '32px' }}>
+              <div className="card" style={{ textAlign: 'center', color: 'var(--text-secondary)', padding: '32px' }}>
                 No upcoming appointments.{' '}
                 <span className="link" onClick={() => navigate('/book')}>Book one now →</span>
               </div>
@@ -108,12 +108,12 @@ export default function Dashboard() {
                   <div key={apt.id} className="card" style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '16px 20px' }}>
                     <div style={{
                       width: 44, height: 44, borderRadius: 10,
-                      background: '#eef2ff', display: 'flex',
+                      background: 'var(--primary-bg)', display: 'flex',
                       alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0,
                     }}>📅</div>
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontWeight: 600, fontSize: 15, color: '#111827' }}>{apt.service}</div>
-                      <div style={{ fontSize: 13, color: '#6b7280', marginTop: 2 }}>
+                      <div style={{ fontWeight: 600, fontSize: 15, color: 'var(--text)' }}>{apt.service}</div>
+                      <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 2 }}>
                         👤 {apt.provider} · {apt.date} · {apt.time}
                       </div>
                     </div>

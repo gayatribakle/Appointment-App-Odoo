@@ -71,7 +71,7 @@ export default function VerifyOTP() {
           </button>
         </form>
 
-        <p className="text-center mt-4" style={{ fontSize: 14, color: '#6b7280' }}>
+        <p className="text-center mt-4" style={{ fontSize: 14, color: 'var(--text-secondary)' }}>
           Didn't receive the code?{' '}
           <span className="link" onClick={handleResend}>Resend OTP</span>
         </p>

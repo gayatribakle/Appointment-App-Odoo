@@ -16,7 +16,7 @@ export default function TimeSlot({ slots = [], selected, onSelect }) {
             onClick={() => !slot.booked && onSelect && onSelect(slot.time)}
           >
             {slot.time}
-            {slot.booked && <div style={{ fontSize: 10, marginTop: 2, color: '#9ca3af' }}>Full</div>}
+            {slot.booked && <div style={{ fontSize: 10, marginTop: 2, color: 'var(--text-secondary)' }}>Full</div>}
           </div>
         );
       })}

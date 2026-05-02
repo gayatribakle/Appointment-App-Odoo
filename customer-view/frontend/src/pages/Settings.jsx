@@ -22,12 +22,12 @@ export default function Settings() {
       onClick={onChange}
       style={{
         width: 44, height: 24, borderRadius: 999, cursor: 'pointer', transition: 'background 0.2s',
-        background: checked ? '#4f46e5' : '#d1d5db', position: 'relative', flexShrink: 0,
+        background: checked ? 'var(--primary)' : 'var(--border)', position: 'relative', flexShrink: 0,
       }}
     >
       <div style={{
         position: 'absolute', top: 3, left: checked ? 23 : 3,
-        width: 18, height: 18, borderRadius: '50%', background: '#fff',
+        width: 18, height: 18, borderRadius: '50%', background: 'var(--white)',
         transition: 'left 0.2s', boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
       }} />
     </div>
@@ -36,8 +36,8 @@ export default function Settings() {
   const SettingRow = ({ label, desc, checked, onChange }) => (
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 0', borderBottom: '1px solid #f3f4f6' }}>
       <div>
-        <div style={{ fontWeight: 500, fontSize: 14, color: '#111827' }}>{label}</div>
-        {desc && <div style={{ fontSize: 12, color: '#9ca3af', marginTop: 2 }}>{desc}</div>}
+        <div style={{ fontWeight: 500, fontSize: 14, color: 'var(--text)' }}>{label}</div>
+        {desc && <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2 }}>{desc}</div>}
       </div>
       <Toggle checked={checked} onChange={onChange} />
     </div>
@@ -51,8 +51,8 @@ export default function Settings() {
         <div className="page-content">
           <div style={{ maxWidth: 680, margin: '0 auto' }}>
 
-            <h1 style={{ fontSize: 22, fontWeight: 700, color: '#111827', marginBottom: 4 }}>Settings</h1>
-            <p style={{ fontSize: 14, color: '#6b7280', marginBottom: 24 }}>Manage your account preferences</p>
+            <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--text)', marginBottom: 4 }}>Settings</h1>
+            <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 24 }}>Manage your account preferences</p>
 
             {saved && <div className="alert alert-success" style={{ marginBottom: 20 }}>✅ {saved} settings saved!</div>}
 

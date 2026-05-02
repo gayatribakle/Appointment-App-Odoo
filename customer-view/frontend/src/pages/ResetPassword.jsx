@@ -57,7 +57,7 @@ export default function ResetPassword() {
           </div>
         )}
 
-        <p className="text-center mt-4" style={{ fontSize: 14, color: '#6b7280' }}>
+        <p className="text-center mt-4" style={{ fontSize: 14, color: 'var(--text-secondary)' }}>
           Remember your password?{' '}
           <span className="link" onClick={() => navigate('/login')}>Back to login</span>
         </p>

@@ -23,10 +23,10 @@ export default function Confirmation() {
             {/* Success Banner */}
             <div className="card text-center" style={{ marginBottom: 20 }}>
               <div className="confirmation-icon">✅</div>
-              <h2 style={{ fontSize: 22, fontWeight: 700, color: '#111827', marginBottom: 8 }}>
+              <h2 style={{ fontSize: 22, fontWeight: 700, color: 'var(--text)', marginBottom: 8 }}>
                 Appointment Confirmed!
               </h2>
-              <p style={{ fontSize: 14, color: '#6b7280', marginBottom: 12 }}>
+              <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 12 }}>
                 Your booking has been successfully confirmed. A confirmation has been sent to your email.
               </p>
               <span className="badge badge-indigo" style={{ fontSize: 13, padding: '4px 14px' }}>
