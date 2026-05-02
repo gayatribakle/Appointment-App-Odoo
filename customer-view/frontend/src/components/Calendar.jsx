@@ -19,6 +19,13 @@ export default function Calendar({ selectedDate, onSelect, availableDates = [] }
   const daysInMonth = getDaysInMonth(viewYear, viewMonth);
   const firstDay = getFirstDayOfMonth(viewYear, viewMonth);
 
+  const goToToday = () => {
+    setViewYear(today.getFullYear());
+    setViewMonth(today.getMonth());
+    const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    if (onSelect) onSelect(dateStr);
+  };
+
   const prevMonth = () => {
     if (viewMonth === 0) { setViewMonth(11); setViewYear(y => y - 1); }
     else setViewMonth(m => m - 1);
@@ -36,9 +43,18 @@ export default function Calendar({ selectedDate, onSelect, availableDates = [] }
   return (
     <div className="calendar-wrapper">
       <div className="calendar-header">
-        <button className="btn btn-outline btn-sm" onClick={prevMonth}>‹</button>
+        <div style={{ display: 'flex', gap: 6 }}>
+          <button className="btn btn-outline btn-sm" onClick={prevMonth} title="Previous Month">‹</button>
+          <button 
+            className="btn btn-outline btn-sm" 
+            onClick={goToToday} 
+            style={{ fontSize: 11, padding: '4px 10px' }}
+          >
+            Today
+          </button>
+        </div>
         <span className="calendar-month">{MONTHS[viewMonth]} {viewYear}</span>
-        <button className="btn btn-outline btn-sm" onClick={nextMonth}>›</button>
+        <button className="btn btn-outline btn-sm" onClick={nextMonth} title="Next Month">›</button>
       </div>
       <div className="calendar-grid">
         {DAYS.map(d => (
