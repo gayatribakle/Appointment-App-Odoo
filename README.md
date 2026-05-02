@@ -1,73 +1,129 @@
-# React + TypeScript + Vite
+# 📅 BookSync — Smart Appointment Booking System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-stack, role-based appointment scheduling platform built for seamless coordination between **Organizers**, **Customers**, and **Admins**. Designed to handle real-world booking scenarios with real-time updates and secure transactions.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## ✨ Key Features
 
-## React Compiler
+### 🔐 Authentication & Roles
+- Unified login system supporting **three distinct roles**: Customer, Organizer, and Admin
+- Secure JWT-based session management
+- OTP-based email verification for account activation
+- Password recovery with reset flow
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 🗓️ Service & Slot Management (Organizer)
+- Create and manage appointment services with flexible rules
+- Define weekly availability with configurable time intervals
+- Auto-generate bookable time slots based on availability rules
+- Publish/unpublish services to control visibility
+- **Share private appointment links** for invite-only bookings
 
-## Expanding the ESLint configuration
+### 📋 Smart Booking Engine (Customer)
+- Browse published services and book appointments in real-time
+- Dynamic slot availability — only open slots are shown
+- Concurrency-safe booking with database-level row locking
+- Duplicate booking prevention per user per slot
+- Pre-consultation meeting support (Online/Offline)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 💳 Integrated Payment Gateway
+- Razorpay integration with UPI, Cards, and Wallet support
+- Secure payment verification using cryptographic signature validation
+- Automatic booking confirmation upon successful payment
+- Sandbox/Mock mode for development and testing
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### 🔔 Real-Time Notifications
+- Instant push notifications via WebSockets (Socket.io)
+- Booking confirmations, cancellations, and payment alerts
+- Notification center with read/unread management
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### 🛡️ Admin Panel
+- Platform-wide dashboard with key metrics
+- Service moderation — approve or reject organizer submissions
+- User management with role promotion and account control
+- Booking oversight with admin-level cancellation
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### 📊 Analytics & Reports
+- Organizer dashboard with booking statistics and revenue tracking
+- Calendar view for visual appointment management
+- Peak hour analysis and service performance metrics
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🛠️ Tech Stack
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+| Layer         | Technology                      |
+| ------------- | ------------------------------- |
+| **Frontend**  | React 19, TypeScript, Vite      |
+| **Backend**   | Node.js, Express.js, TypeScript |
+| **Database**  | PostgreSQL                      |
+| **Real-Time** | Socket.io                       |
+| **Auth**      | JWT, bcrypt                     |
+| **Payments**  | Razorpay SDK                    |
+| **Video**     | Jitsi Meet (embedded)           |
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js (v18+)
+- PostgreSQL (v14+)
+- npm
+
+### Setup
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/gayatribakle/Appointment-App-Odoo.git
+   cd Appointment-App-Odoo
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Configure environment**
+   Create a `.env` file in the root directory:
+   ```env
+   DB_USER=postgres
+   DB_PASSWORD=your_password
+   DB_NAME=organizer_db
+   DB_HOST=localhost
+   DB_PORT=5432
+   JWT_SECRET=your_secret_key
+   ```
+
+4. **Initialize the database**
+   ```bash
+   psql -U postgres -f server/init.sql
+   ```
+
+5. **Run the application**
+   ```bash
+   # Terminal 1 — Backend
+   npm run server
+
+   # Terminal 2 — Frontend
+   npm run dev
+   ```
+
+6. Open `http://localhost:5173` in your browser.
+
+---
+
+## 👥 Team
+
+| Name              | Role                  |
+| ----------------- | --------------------- |
+| **Om Jejurkar**   | Full-Stack Developer  |
+| **Gayatri Bakle** | Project Lead & Design |
+| **Kirti Joshi**   | Frontend Developer    |
+| **Anushka Bhor**  | Frontend Developer    |
+
+---
+
+## 📄 License
+
+This project was built as part of a hackathon submission. All rights reserved.
