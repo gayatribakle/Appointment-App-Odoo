@@ -2,14 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import Navbar from '../components/Navbar';
-
-const APPOINTMENTS = [
-  { id: 'APT-A1B2C3', service: 'General Consultation', provider: 'Dr. Priya Sharma', date: '2026-05-10', time: '10:00 AM', duration: 30, price: 500, status: 'confirmed' },
-  { id: 'APT-D4E5F6', service: 'Dental Checkup',        provider: 'Dr. Arjun Mehta',  date: '2026-05-14', time: '11:30 AM', duration: 45, price: 800, status: 'confirmed' },
-  { id: 'APT-G7H8I9', service: 'Cardiology Assessment', provider: 'Dr. Neha Singh',   date: '2026-04-28', time: '3:00 PM',  duration: 60, price: 1500, status: 'completed' },
-  { id: 'APT-J1K2L3', service: 'Orthopedic Visit',      provider: 'Dr. Vikas Patel',  date: '2026-04-20', time: '7:00 AM',  duration: 45, price: 1200, status: 'completed' },
-  { id: 'APT-M4N5O6', service: 'Vision Test',           provider: 'Dr. Ravi Kapoor',  date: '2026-04-10', time: '9:30 AM',  duration: 30, price: 400, status: 'cancelled' },
-];
+import { useAppointments } from '../context/AppointmentContext';
 
 const STATUS_COLORS = {
   confirmed: { bg: '#d1fae5', color: '#065f46', label: 'Confirmed' },
@@ -22,8 +15,15 @@ const TABS = ['All', 'Upcoming', 'Completed', 'Cancelled'];
 export default function MyAppointments() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('All');
+  const { appointments, cancelAppointment } = useAppointments();
 
-  const filtered = APPOINTMENTS.filter((a) => {
+  const handleCancel = (id) => {
+    if (window.confirm('Are you confirm cancelling the appointment?')) {
+      cancelAppointment(id);
+    }
+  };
+
+  const filtered = appointments.filter((a) => {
     if (activeTab === 'All') return true;
     if (activeTab === 'Upcoming') return a.status === 'confirmed';
     if (activeTab === 'Completed') return a.status === 'completed';
@@ -52,9 +52,9 @@ export default function MyAppointments() {
           {/* Stats */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginBottom: 24 }}>
             {[
-              { label: 'Upcoming',  value: APPOINTMENTS.filter(a => a.status === 'confirmed').length,  icon: '📅', color: 'var(--primary)', bg: 'var(--primary-bg)' },
-              { label: 'Completed', value: APPOINTMENTS.filter(a => a.status === 'completed').length,  icon: '✅', color: '#059669', bg: '#d1fae5' },
-              { label: 'Cancelled', value: APPOINTMENTS.filter(a => a.status === 'cancelled').length,   icon: '❌', color: '#dc2626', bg: '#fee2e2' },
+              { label: 'Upcoming',  value: appointments.filter(a => a.status === 'confirmed').length,  icon: '📅', color: 'var(--primary)', bg: 'var(--primary-bg)' },
+              { label: 'Completed', value: appointments.filter(a => a.status === 'completed').length,  icon: '✅', color: '#059669', bg: '#d1fae5' },
+              { label: 'Cancelled', value: appointments.filter(a => a.status === 'cancelled').length,   icon: '❌', color: '#dc2626', bg: '#fee2e2' },
             ].map((s) => (
               <div key={s.label} className="card" style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 14 }}>
                 <div style={{ width: 44, height: 44, borderRadius: 10, background: s.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22 }}>{s.icon}</div>
@@ -99,7 +99,13 @@ export default function MyAppointments() {
                       <div style={{ fontWeight: 700, fontSize: 16, color: 'var(--primary)' }}>₹{apt.price}</div>
                       <div style={{ marginTop: 8, display: 'flex', gap: 8 }}>
                         {apt.status === 'confirmed' && (
-                          <button className="btn btn-outline btn-sm" style={{ color: '#dc2626', borderColor: '#fca5a5' }}>Cancel</button>
+                          <button 
+                            onClick={() => handleCancel(apt.id)}
+                            className="btn btn-outline btn-sm" 
+                            style={{ color: '#dc2626', borderColor: '#fca5a5' }}
+                          >
+                            Cancel
+                          </button>
                         )}
                         <button className="btn btn-outline btn-sm">Details</button>
                       </div>

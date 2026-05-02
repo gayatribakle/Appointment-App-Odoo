@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import Navbar from '../components/Navbar';
 import ServiceCard from '../components/ServiceCard';
+import { useAppointments } from '../context/AppointmentContext';
 
 const SERVICES = [
   { id: 1, name: 'General Consultation', provider: 'Dr. Priya Sharma',   duration: 30, price: 500,  category: 'General',      emoji: '🩺', rating: 4.8 },
@@ -13,17 +14,15 @@ const SERVICES = [
   { id: 6, name: 'Pediatric Visit',       provider: 'Dr. Sunita Rao',    duration: 45, price: 600,  category: 'Pediatrics',   emoji: '👶', rating: 5.0 },
 ];
 
-const UPCOMING = [
-  { id: 'u1', service: 'General Consultation', provider: 'Dr. Priya Sharma', date: '2026-05-10', time: '10:00 AM', status: 'Confirmed' },
-  { id: 'u2', service: 'Cardiology Assessment',provider: 'Dr. Neha Singh',   date: '2026-05-14', time: '7:00 AM',  status: 'Confirmed' },
-];
-
 const CATEGORIES = ['All Services', 'General', 'Dental', 'Cardiology', 'Orthopedics', 'Ophthalmology', 'Pediatrics'];
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('All Services');
   const [search, setSearch] = useState('');
+  const { appointments } = useAppointments();
+  
+  const upcomingAppointments = appointments.filter(a => a.status === 'confirmed').slice(0, 3);
 
   const filtered = SERVICES.filter((s) => {
     const matchCat = activeTab === 'All Services' || s.category === activeTab;
@@ -97,14 +96,14 @@ export default function Dashboard() {
             <h2 style={{ fontSize: 17, fontWeight: 700, color: 'var(--text)', marginBottom: 14 }}>
               Upcoming Appointments
             </h2>
-            {UPCOMING.length === 0 ? (
+            {upcomingAppointments.length === 0 ? (
               <div className="card" style={{ textAlign: 'center', color: 'var(--text-secondary)', padding: '32px' }}>
                 No upcoming appointments.{' '}
                 <span className="link" onClick={() => navigate('/book')}>Book one now →</span>
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                {UPCOMING.map((apt) => (
+                {upcomingAppointments.map((apt) => (
                   <div key={apt.id} className="card" style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '16px 20px' }}>
                     <div style={{
                       width: 44, height: 44, borderRadius: 10,
@@ -117,8 +116,8 @@ export default function Dashboard() {
                         👤 {apt.provider} · {apt.date} · {apt.time}
                       </div>
                     </div>
-                    <span className="badge badge-green">{apt.status}</span>
-                    <button className="btn btn-outline btn-sm">View Details</button>
+                    <span className="badge badge-green">Confirmed</span>
+                    <button onClick={() => navigate('/my-appointments')} className="btn btn-outline btn-sm">View Details</button>
                   </div>
                 ))}
               </div>

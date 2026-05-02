@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import AppRoutes from './routes/AppRoutes';
+import { AppointmentProvider } from './context/AppointmentContext';
 import './index.css';
 
 function ThemeToggle() {
@@ -36,9 +37,9 @@ function ThemeToggle() {
 
 export default function App() {
   return (
-    <>
+    <AppointmentProvider>
       <AppRoutes />
       <ThemeToggle />
-    </>
+    </AppointmentProvider>
   );
 }

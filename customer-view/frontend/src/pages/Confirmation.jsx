@@ -6,9 +6,9 @@ import Navbar from '../components/Navbar';
 export default function Confirmation() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { service, provider, date, time, payMethod } = location.state || {};
+  const { service, provider, date, time, payMethod, bookingId: passedBookingId } = location.state || {};
 
-  const bookingId = `APT-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+  const bookingId = passedBookingId || `APT-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
   const total = service ? Math.round(service.price * 1.18) : 0;
   const isOffline = payMethod === 'offline';
 

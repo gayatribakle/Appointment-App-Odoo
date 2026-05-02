@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import Stepper from '../components/Stepper';
+import { useAppointments } from '../context/AppointmentContext';
 
 export default function Payment() {
   const navigate = useNavigate();
@@ -11,13 +12,27 @@ export default function Payment() {
   const [payMethod, setPayMethod] = useState('card');
   const [card, setCard] = useState({ number: '', name: '', expiry: '', cvv: '' });
   const [loading, setLoading] = useState(false);
+  const { addAppointment } = useAppointments();
 
   const handlePay = (e) => {
     e.preventDefault();
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      navigate('/book/confirmation', { state: { service, provider, date, time, payMethod } });
+      const bookingId = `APT-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+      
+      addAppointment({
+        id: bookingId,
+        service: service?.name || 'General Consultation',
+        provider: provider?.name || 'Unknown Provider',
+        date: date || 'TBD',
+        time: time || 'TBD',
+        duration: service?.duration || 30,
+        price: total,
+        status: 'confirmed'
+      });
+
+      navigate('/book/confirmation', { state: { service, provider, date, time, payMethod, bookingId } });
     }, 1500);
   };
 
