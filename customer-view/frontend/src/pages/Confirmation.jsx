@@ -6,9 +6,11 @@ import Navbar from '../components/Navbar';
 export default function Confirmation() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { service, provider, date, time } = location.state || {};
+  const { service, provider, date, time, payMethod } = location.state || {};
 
   const bookingId = `APT-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+  const total = service ? Math.round(service.price * 1.18) : 0;
+  const isOffline = payMethod === 'offline';
 
   return (
     <div className="app-layout">
@@ -56,9 +58,9 @@ export default function Confirmation() {
                 <span className="value">{service?.duration || '—'} min</span>
               </div>
               <div className="summary-row">
-                <span className="label">💰 Amount Paid</span>
-                <span className="value summary-total" style={{ color: '#10b981' }}>
-                  ₹{service ? Math.round(service.price * 1.18) : '—'}
+                <span className="label">💰 Payment</span>
+                <span className="value summary-total" style={{ color: isOffline ? '#d97706' : '#10b981' }}>
+                  {isOffline ? `₹${total} (Due at Hospital)` : `₹${total} (Paid)`}
                 </span>
               </div>
               <div className="summary-row">

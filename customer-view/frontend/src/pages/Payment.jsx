@@ -17,7 +17,7 @@ export default function Payment() {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      navigate('/book/confirmation', { state: { service, provider, date, time } });
+      navigate('/book/confirmation', { state: { service, provider, date, time, payMethod } });
     }, 1500);
   };
 
@@ -29,6 +29,7 @@ export default function Payment() {
     { id: 'card',       label: '💳  Card'        },
     { id: 'upi',        label: '📱  UPI'          },
     { id: 'netbanking', label: '🏦  Net Banking'  },
+    { id: 'offline',    label: '🏥  Pay at Hospital' },
   ];
 
   return (
@@ -59,14 +60,14 @@ export default function Payment() {
             <div className="card-title">Payment Details</div>
 
             {/* Method tabs */}
-            <div style={{ display: 'flex', gap: 8, marginBottom: 24 }}>
+            <div style={{ display: 'flex', gap: 8, marginBottom: 24, flexWrap: 'wrap' }}>
               {payMethods.map((m) => (
                 <button
                   key={m.id}
                   type="button"
                   onClick={() => setPayMethod(m.id)}
                   style={{
-                    flex: 1, padding: '10px 0', borderRadius: 8, cursor: 'pointer',
+                    flex: '1 1 calc(50% - 4px)', padding: '10px 0', borderRadius: 8, cursor: 'pointer',
                     border: `2px solid ${payMethod === m.id ? '#4f46e5' : '#e5e7eb'}`,
                     background: payMethod === m.id ? '#eef2ff' : '#fff',
                     color: payMethod === m.id ? '#4f46e5' : '#374151',
@@ -142,6 +143,19 @@ export default function Payment() {
                 </div>
                 <button type="submit" className="btn btn-primary" disabled={loading}>
                   {loading ? 'Redirecting…' : `Pay ₹${total} via Net Banking`}
+                </button>
+              </form>
+            )}
+
+            {payMethod === 'offline' && (
+              <form onSubmit={handlePay}>
+                <div style={{ background: '#f3f4f6', padding: '16px', borderRadius: '10px', marginBottom: '20px' }}>
+                  <p style={{ fontSize: '14px', color: '#374151', margin: 0, lineHeight: 1.5 }}>
+                    You can pay the total amount of <strong>₹{total}</strong> directly at the hospital reception either by Cash, Card, or UPI on the day of your appointment.
+                  </p>
+                </div>
+                <button type="submit" className="btn btn-primary" disabled={loading}>
+                  {loading ? 'Booking…' : `Book Appointment`}
                 </button>
               </form>
             )}
