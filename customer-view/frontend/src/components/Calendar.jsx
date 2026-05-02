@@ -67,22 +67,29 @@ export default function Calendar({ selectedDate, onSelect, availableDates = [] }
           const todayNormalized = new Date();
           todayNormalized.setHours(0, 0, 0, 0);
 
+          const maxDate = new Date(todayNormalized);
+          maxDate.setDate(maxDate.getDate() + 10);
+
           const isToday = cellDate.getTime() === todayNormalized.getTime();
           const isSelected = selectedDate === dateStr;
           const isPast = cellDate < todayNormalized;
-          const isAvailable = availableDates.length === 0 ? !isPast : availableDates.includes(dateStr);
+          const isTooFarFuture = cellDate > maxDate;
+          
+          const isAvailable = availableDates.length === 0 
+            ? (!isPast && !isTooFarFuture) 
+            : (availableDates.includes(dateStr) && !isTooFarFuture);
 
           let cls = 'calendar-day';
           if (isSelected) cls += ' selected';
           if (isToday) cls += ' today';
-          if (isPast || !isAvailable) cls += ' disabled';
-          if (isAvailable && !isPast) cls += ' available';
+          if (isPast || isTooFarFuture || !isAvailable) cls += ' disabled';
+          if (isAvailable && !isPast && !isTooFarFuture) cls += ' available';
 
           return (
             <div
               key={dateStr}
               className={cls}
-              onClick={() => !isPast && isAvailable && onSelect && onSelect(dateStr)}
+              onClick={() => !isPast && !isTooFarFuture && isAvailable && onSelect && onSelect(dateStr)}
             >
               {day}
             </div>

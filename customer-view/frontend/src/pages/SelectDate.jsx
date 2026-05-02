@@ -42,7 +42,7 @@ export default function SelectDate() {
           <div className="card">
             <div className="card-title">Choose an Available Date</div>
             <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 20 }}>
-              Select a date for your appointment. Past dates are disabled.
+              Select a date for your appointment. You can book for today or any date within the next 10 days.
             </p>
             <Calendar selectedDate={selectedDate} onSelect={setSelectedDate} />
 
