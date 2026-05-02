@@ -8,9 +8,12 @@ export default function Navbar({ title, subtitle }) {
   const { appointments } = useAppointments();
   const navigate = useNavigate();
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
   const dropdownRef = useRef(null);
+  const notifRef = useRef(null);
 
-  const upcomingCount = appointments?.filter(a => a.status === 'confirmed').length || 0;
+  const upcomingAppointments = appointments?.filter(a => a.status === 'confirmed') || [];
+  const upcomingCount = upcomingAppointments.length;
 
   const initials = user?.name 
     ? user.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
@@ -25,6 +28,9 @@ export default function Navbar({ title, subtitle }) {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setShowDropdown(false);
+      }
+      if (notifRef.current && !notifRef.current.contains(event.target)) {
+        setShowNotifications(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -43,7 +49,13 @@ export default function Navbar({ title, subtitle }) {
           <input placeholder="Search services..." />
         </div>
         
-        <div className="icon-btn" title="Notifications" style={{ position: 'relative' }}>
+        <div 
+          className="icon-btn" 
+          title="Notifications" 
+          style={{ position: 'relative', cursor: 'pointer' }}
+          onClick={() => setShowNotifications(!showNotifications)}
+          ref={notifRef}
+        >
           🔔
           {upcomingCount > 0 && (
             <span style={{
@@ -54,6 +66,50 @@ export default function Navbar({ title, subtitle }) {
             }}>
               {upcomingCount}
             </span>
+          )}
+
+          {showNotifications && (
+            <div style={{
+              position: 'absolute', top: 50, right: -60, background: 'var(--white)',
+              border: '1px solid var(--border)', borderRadius: 8, boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+              width: 300, zIndex: 1000, overflow: 'hidden', textAlign: 'left', cursor: 'default'
+            }} onClick={e => e.stopPropagation()}>
+              <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--border)', fontWeight: 600, fontSize: 14, color: 'var(--text)' }}>
+                Notifications ({upcomingCount})
+              </div>
+              <div style={{ maxHeight: 300, overflowY: 'auto' }}>
+                {upcomingCount === 0 ? (
+                  <div style={{ padding: '24px 16px', textAlign: 'center', color: 'var(--text-secondary)', fontSize: 13 }}>
+                    No new notifications
+                  </div>
+                ) : (
+                  upcomingAppointments.map(apt => (
+                    <div key={apt.id} style={{ 
+                      padding: '12px 16px', borderBottom: '1px solid var(--border)',
+                      display: 'flex', gap: 12, alignItems: 'flex-start'
+                    }}>
+                      <div style={{ fontSize: 20 }}>📅</div>
+                      <div>
+                        <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 2 }}>
+                          Upcoming: {apt.service}
+                        </div>
+                        <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>
+                          With {apt.provider} on {apt.date} at {apt.time}
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+              {upcomingCount > 0 && (
+                <div 
+                  style={{ padding: '10px', textAlign: 'center', background: 'var(--bg)', color: 'var(--primary)', fontSize: 13, fontWeight: 500, cursor: 'pointer' }}
+                  onClick={() => navigate('/my-appointments')}
+                >
+                  View all appointments
+                </div>
+              )}
+            </div>
           )}
         </div>
         <div className="icon-btn" title="Messages">💬</div>
