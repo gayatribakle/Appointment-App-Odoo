@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import Sidebar from '../components/Sidebar';
 import Navbar from '../components/Navbar';
+import { useAuth } from '../context/AuthContext';
 
 export default function Profile() {
+  const { user } = useAuth();
   const [form, setForm] = useState({
-    name: 'Jane Doe',
-    email: 'jane.doe@example.com',
+    name: user?.name || 'Guest User',
+    email: user?.email || 'guest@example.com',
     phone: '+91 9876543210',
     dob: '1995-06-15',
     gender: 'Female',
@@ -40,7 +42,9 @@ export default function Profile() {
                 background: 'linear-gradient(135deg, #4f46e5, #7c3aed)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 color: 'white', fontWeight: 700, fontSize: 32, flexShrink: 0,
-              }}>JD</div>
+              }}>
+                {form.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
+              </div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontWeight: 700, fontSize: 20, color: 'var(--text)' }}>{form.name}</div>
                 <div style={{ fontSize: 14, color: 'var(--text-secondary)', marginTop: 4 }}>{form.email}</div>
