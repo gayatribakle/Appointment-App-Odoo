@@ -15,7 +15,7 @@ export default function Signup() {
     if (!form.name || !form.email || !form.password) { setError('All fields are required.'); return; }
     if (form.password.length < 6) { setError('Password must be at least 6 characters.'); return; }
     setLoading(true);
-    setTimeout(() => { setLoading(false); navigate('/verify-otp'); }, 1000);
+    setTimeout(() => { setLoading(false); navigate('/login'); }, 1000);
   };
 
   return (
