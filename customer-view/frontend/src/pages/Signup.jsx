@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 export default function Signup() {
   const navigate = useNavigate();
+  const { signup } = useAuth();
   const [form, setForm] = useState({ name: '', email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -14,8 +16,15 @@ export default function Signup() {
     setError('');
     if (!form.name || !form.email || !form.password) { setError('All fields are required.'); return; }
     if (form.password.length < 6) { setError('Password must be at least 6 characters.'); return; }
-    setLoading(true);
-    setTimeout(() => { setLoading(false); navigate('/login'); }, 1000);
+    
+    try {
+      setLoading(true);
+      signup(form.name, form.email, form.password);
+      setTimeout(() => { setLoading(false); navigate('/login'); }, 1000);
+    } catch (err) {
+      setLoading(false);
+      setError(err.message);
+    }
   };
 
   return (

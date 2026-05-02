@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 export default function Login() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -13,12 +15,18 @@ export default function Login() {
     e.preventDefault();
     setError('');
     if (!form.email || !form.password) { setError('All fields are required.'); return; }
-    setLoading(true);
-    // Simulate login
-    setTimeout(() => {
+    
+    try {
+      setLoading(true);
+      login(form.email, form.password);
+      setTimeout(() => {
+        setLoading(false);
+        navigate('/dashboard');
+      }, 1000);
+    } catch (err) {
       setLoading(false);
-      navigate('/dashboard');
-    }, 1000);
+      setError(err.message);
+    }
   };
 
   return (
