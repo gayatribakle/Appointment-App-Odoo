@@ -3,25 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import Navbar from '../components/Navbar';
 
-const ALL_SERVICES = [
-  { id: 1, name: 'General Consultation', provider: 'Dr. Priya Sharma',  duration: 30, price: 500,  category: 'General',      emoji: '🩺', rating: 4.8, reviews: 120 },
-  { id: 2, name: 'Dental Checkup',        provider: 'Dr. Arjun Mehta',  duration: 45, price: 800,  category: 'Dental',       emoji: '🦷', rating: 4.7, reviews: 89  },
-  { id: 3, name: 'Cardiology Assessment', provider: 'Dr. Neha Singh',   duration: 60, price: 1500, category: 'Cardiology',   emoji: '❤️', rating: 4.9, reviews: 210 },
-  { id: 4, name: 'Orthopedic Visit',      provider: 'Dr. Vikas Patel',  duration: 45, price: 1200, category: 'Orthopedics',  emoji: '🦴', rating: 4.6, reviews: 75  },
-  { id: 5, name: 'Vision Test',           provider: 'Dr. Ravi Kapoor',  duration: 30, price: 400,  category: 'Ophthalmology',emoji: '👁️', rating: 4.8, reviews: 95  },
-  { id: 6, name: 'Pediatric Visit',       provider: 'Dr. Sunita Rao',   duration: 45, price: 600,  category: 'Pediatrics',   emoji: '👶', rating: 5.0, reviews: 180 },
-  { id: 7, name: 'Dermatology Consult',   provider: 'Dr. Rakesh Verma', duration: 30, price: 950,  category: 'Dermatology',  emoji: ' छाला', rating: 4.7, reviews: 140 },
-  { id: 8, name: 'ENT Checkup',           provider: 'Dr. Anil Gupta',   duration: 30, price: 700,  category: 'ENT',          emoji: '👂', rating: 4.9, reviews: 60  },
-];
+import { SERVICES } from '../services/data';
 
-const CATS = ['All', 'General', 'Dental', 'Cardiology', 'Orthopedics', 'Ophthalmology', 'Pediatrics'];
+const CATS = ['All', ...new Set(SERVICES.map(s => s.category))];
 
 export default function Services() {
   const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState('All');
   const [search, setSearch] = useState('');
 
-  const filtered = ALL_SERVICES.filter((s) => {
+  const filtered = SERVICES.filter((s) => {
     const matchCat = activeCategory === 'All' || s.category === activeCategory;
     const matchSearch = s.name.toLowerCase().includes(search.toLowerCase()) ||
       s.provider.toLowerCase().includes(search.toLowerCase());

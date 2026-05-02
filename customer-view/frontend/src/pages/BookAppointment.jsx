@@ -3,31 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import Stepper from '../components/Stepper';
 
-const SERVICES = [
-  { id: 1, name: 'General Consultation', provider: 'Dr. Priya Sharma', duration: 30, price: 500,  category: 'General',      emoji: '🩺' },
-  { id: 2, name: 'Dental Checkup',        provider: 'Dr. Arjun Mehta',  duration: 45, price: 800,  category: 'Dental',       emoji: '🦷' },
-  { id: 3, name: 'Cardiology Assessment', provider: 'Dr. Neha Singh',   duration: 60, price: 1500, category: 'Cardiology',   emoji: '❤️' },
-  { id: 4, name: 'Orthopedic Visit',      provider: 'Dr. Vikas Patel',  duration: 45, price: 1200, category: 'Orthopedics',  emoji: '🦴' },
-];
-
-const PROVIDERS = {
-  1: [
-    { id:'p1', name:'Dr. Priya Sharma',  specialty:'General Physician', initials:'PS', available: true },
-    { id:'p2', name:'Dr. Kavya Reddy',   specialty:'Family Doctor',     initials:'KR', available: true },
-  ],
-  2: [
-    { id:'p3', name:'Dr. Arjun Mehta',   specialty:'Dentist',           initials:'AM', available: true },
-    { id:'p4', name:'Dr. Sneha Joshi',   specialty:'Orthodontist',      initials:'SJ', available: false },
-  ],
-  3: [
-    { id:'p5', name:'Dr. Neha Singh',    specialty:'Cardiologist',      initials:'NS', available: true },
-    { id:'p6', name:'Dr. Priti Shah',    specialty:'Senior Cardiologist',initials:'PS', available: true },
-  ],
-  4: [
-    { id:'p7', name:'Dr. Vikas Patel',   specialty:'Orthopedic Surgeon', initials:'VP', available: true },
-    { id:'p8', name:'Dr. Ananya Das',    specialty:'Sports Medicine',    initials:'AD', available: true },
-  ],
-};
+import { SERVICES, PROVIDERS } from '../services/data';
 
 export default function BookAppointment() {
   const navigate = useNavigate();

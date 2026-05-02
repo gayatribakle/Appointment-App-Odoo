@@ -6,16 +6,9 @@ import ServiceCard from '../components/ServiceCard';
 import AppointmentDetailsModal from '../components/AppointmentDetailsModal';
 import { useAppointments } from '../context/AppointmentContext';
 
-const SERVICES = [
-  { id: 1, name: 'General Consultation', provider: 'Dr. Priya Sharma',   duration: 30, price: 500,  category: 'General',      emoji: '🩺', rating: 4.8 },
-  { id: 2, name: 'Dental Checkup',        provider: 'Dr. Arjun Mehta',   duration: 45, price: 800,  category: 'Dental',       emoji: '🦷', rating: 4.7 },
-  { id: 3, name: 'Cardiology Assessment', provider: 'Dr. Neha Singh',    duration: 60, price: 1500, category: 'Cardiology',   emoji: '❤️', rating: 4.9 },
-  { id: 4, name: 'Orthopedic Visit',      provider: 'Dr. Vikas Patel',   duration: 45, price: 1200, category: 'Orthopedics',  emoji: '🦴', rating: 4.6 },
-  { id: 5, name: 'Vision Test',           provider: 'Dr. Ravi Kapoor',   duration: 30, price: 400,  category: 'Ophthalmology',emoji: '👁️', rating: 4.8 },
-  { id: 6, name: 'Pediatric Visit',       provider: 'Dr. Sunita Rao',    duration: 45, price: 600,  category: 'Pediatrics',   emoji: '👶', rating: 5.0 },
-];
+import { SERVICES } from '../services/data';
 
-const CATEGORIES = ['All Services', 'General', 'Dental', 'Cardiology', 'Orthopedics', 'Ophthalmology', 'Pediatrics'];
+const CATEGORIES = ['All Services', ...new Set(SERVICES.map(s => s.category))];
 
 export default function Dashboard() {
   const navigate = useNavigate();

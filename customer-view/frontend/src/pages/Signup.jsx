@@ -42,15 +42,7 @@ export default function Signup() {
         position: 'relative',
         overflow: 'hidden',
       }}>
-        {/* Decorative circles */}
-        <div style={{
-          position: 'absolute', width: 320, height: 320, borderRadius: '50%',
-          border: '1px solid rgba(255,255,255,0.15)', top: -80, left: -80,
-        }} />
-        <div style={{
-          position: 'absolute', width: 200, height: 200, borderRadius: '50%',
-          border: '1px solid rgba(255,255,255,0.1)', bottom: -40, right: -40,
-        }} />
+
 
         {/* Brand */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 48, alignSelf: 'flex-start' }}>

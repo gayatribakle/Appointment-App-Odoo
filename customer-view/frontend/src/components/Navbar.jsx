@@ -55,43 +55,7 @@ export default function Navbar({ title, subtitle }) {
         {subtitle && <div className="navbar-breadcrumb">{subtitle}</div>}
       </div>
       <div className="navbar-right">
-        <div className="search-box" ref={searchRef} style={{ position: 'relative' }}>
-          <span>🔍</span>
-          <input 
-            placeholder="Search services..." 
-            value={searchQuery}
-            onChange={(e) => {
-              setSearchQuery(e.target.value);
-              setShowSearch(true);
-            }}
-            onFocus={() => setShowSearch(true)}
-          />
-          {showSearch && searchQuery && (
-            <div style={{
-              position: 'absolute', top: 45, left: 0, width: '100%', background: 'var(--white)',
-              border: '1px solid var(--border)', borderRadius: 8, boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-              zIndex: 1000, overflow: 'hidden'
-            }}>
-              {searchResults.length > 0 ? searchResults.map(s => (
-                <div 
-                  key={s} 
-                  style={{ padding: '10px 14px', borderBottom: '1px solid var(--border)', cursor: 'pointer', fontSize: 13, color: 'var(--text)' }}
-                  onClick={() => {
-                    setShowSearch(false);
-                    setSearchQuery('');
-                    navigate('/book');
-                  }}
-                  onMouseOver={(e) => e.target.style.backgroundColor = 'var(--primary-bg)'}
-                  onMouseOut={(e) => e.target.style.backgroundColor = 'transparent'}
-                >
-                  {s}
-                </div>
-              )) : (
-                <div style={{ padding: '10px 14px', fontSize: 13, color: 'var(--text-secondary)' }}>No services found</div>
-              )}
-            </div>
-          )}
-        </div>
+
         
         <div 
           className="icon-btn" 
