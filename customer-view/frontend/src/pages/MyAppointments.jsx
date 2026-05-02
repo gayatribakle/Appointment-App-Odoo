@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import Navbar from '../components/Navbar';
+import AppointmentDetailsModal from '../components/AppointmentDetailsModal';
 import { useAppointments } from '../context/AppointmentContext';
 
 const STATUS_COLORS = {
@@ -15,6 +16,7 @@ const TABS = ['All', 'Upcoming', 'Completed', 'Cancelled'];
 export default function MyAppointments() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('All');
+  const [selectedApt, setSelectedApt] = useState(null);
   const { appointments, cancelAppointment } = useAppointments();
 
   const handleCancel = (id) => {
@@ -107,7 +109,7 @@ export default function MyAppointments() {
                             Cancel
                           </button>
                         )}
-                        <button className="btn btn-outline btn-sm">Details</button>
+                        <button onClick={() => setSelectedApt(apt)} className="btn btn-outline btn-sm">Details</button>
                       </div>
                     </div>
                   </div>
@@ -117,6 +119,11 @@ export default function MyAppointments() {
           </div>
         </div>
       </div>
+
+      <AppointmentDetailsModal 
+        appointment={selectedApt} 
+        onClose={() => setSelectedApt(null)} 
+      />
     </div>
   );
 }

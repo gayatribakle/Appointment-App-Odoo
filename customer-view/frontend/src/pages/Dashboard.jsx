@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import Navbar from '../components/Navbar';
 import ServiceCard from '../components/ServiceCard';
+import AppointmentDetailsModal from '../components/AppointmentDetailsModal';
 import { useAppointments } from '../context/AppointmentContext';
 
 const SERVICES = [
@@ -20,6 +21,7 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('All Services');
   const [search, setSearch] = useState('');
+  const [selectedApt, setSelectedApt] = useState(null);
   const { appointments } = useAppointments();
   
   const upcomingAppointments = appointments.filter(a => a.status === 'confirmed').slice(0, 3);
@@ -117,7 +119,7 @@ export default function Dashboard() {
                       </div>
                     </div>
                     <span className="badge badge-green">Confirmed</span>
-                    <button onClick={() => navigate('/my-appointments')} className="btn btn-outline btn-sm">View Details</button>
+                    <button onClick={() => setSelectedApt(apt)} className="btn btn-outline btn-sm">View Details</button>
                   </div>
                 ))}
               </div>
@@ -126,6 +128,11 @@ export default function Dashboard() {
 
         </div>
       </div>
+      
+      <AppointmentDetailsModal 
+        appointment={selectedApt} 
+        onClose={() => setSelectedApt(null)} 
+      />
     </div>
   );
 }
