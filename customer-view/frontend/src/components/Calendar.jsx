@@ -63,9 +63,13 @@ export default function Calendar({ selectedDate, onSelect, availableDates = [] }
         {cells.map((day, idx) => {
           if (!day) return <div key={`empty-${idx}`} />;
           const dateStr = `${viewYear}-${String(viewMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-          const isToday = day === today.getDate() && viewMonth === today.getMonth() && viewYear === today.getFullYear();
+          const cellDate = new Date(viewYear, viewMonth, day);
+          const todayNormalized = new Date();
+          todayNormalized.setHours(0, 0, 0, 0);
+
+          const isToday = cellDate.getTime() === todayNormalized.getTime();
           const isSelected = selectedDate === dateStr;
-          const isPast = new Date(dateStr) < new Date(today.toDateString());
+          const isPast = cellDate < todayNormalized;
           const isAvailable = availableDates.length === 0 ? !isPast : availableDates.includes(dateStr);
 
           let cls = 'calendar-day';
