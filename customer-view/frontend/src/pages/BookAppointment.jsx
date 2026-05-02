@@ -54,7 +54,14 @@ export default function BookAppointment() {
           {/* Select Service */}
           <div className="card" style={{ marginBottom: 20 }}>
             <div className="card-title">Select a Service</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div style={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              gap: 10, 
+              maxHeight: '280px', 
+              overflowY: 'auto',
+              paddingRight: '4px'
+            }}>
               {SERVICES.map((s) => {
                 const isSelected = selectedService?.id === s.id;
                 return (
