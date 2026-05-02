@@ -32,7 +32,11 @@ export default function Login() {
   return (
     <div className="auth-wrapper">
       <div className="auth-card">
-        <div className="auth-logo">
+        <div 
+          className="auth-logo" 
+          onClick={() => navigate('/dashboard')} 
+          style={{ cursor: 'pointer' }}
+        >
           <div className="logo-icon">📋</div>
           <span>AppointEase</span>
         </div>

@@ -45,7 +45,10 @@ export default function Signup() {
 
 
         {/* Brand */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 48, alignSelf: 'flex-start' }}>
+        <div 
+          onClick={() => navigate('/dashboard')} 
+          style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 48, alignSelf: 'flex-start', cursor: 'pointer' }}
+        >
           <div style={{
             width: 36, height: 36, background: 'rgba(255,255,255,0.2)',
             borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center',

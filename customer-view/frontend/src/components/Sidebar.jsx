@@ -21,7 +21,11 @@ export default function Sidebar() {
 
   return (
     <aside className="sidebar">
-      <div className="sidebar-logo">
+      <div 
+        className="sidebar-logo" 
+        onClick={() => navigate('/dashboard')} 
+        style={{ cursor: 'pointer' }}
+      >
         <div className="logo-icon">📋</div>
         <span>AppointEase</span>
       </div>
