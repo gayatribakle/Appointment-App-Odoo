@@ -26,7 +26,6 @@ import AdminBookings from './pages/admin/AdminBookings';
 // User Pages
 import Home from './pages/user/Home';
 import ServiceDetail from './pages/user/ServiceDetail';
-import SharedServiceDetail from './pages/user/SharedServiceDetail';
 import MyBookings from './pages/user/MyBookings';
 import MeetingRoom from './pages/MeetingRoom';
 
@@ -41,7 +40,6 @@ export default function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/" element={<Navigate to="/login" replace />} />
-            <Route path="/book/:token" element={<SharedServiceDetail />} />
 
             {/* Organizer Protected Routes */}
             <Route element={<Layout />}>
@@ -68,8 +66,8 @@ export default function App() {
               <Route path="/home" element={<Home />} />
               <Route path="/services/:id" element={<ServiceDetail />} />
               <Route path="/my-bookings" element={<MyBookings />} />
-              <Route path="/join/:bookingId" element={<MeetingRoom />} />
-              <Route path="/my-profile" element={<Profile />} />
+              <Route path="/meeting/:bookingId" element={<MeetingRoom />} />
+              <Route path="/profile" element={<Profile />} />
             </Route>
 
             {/* Catch-all */}

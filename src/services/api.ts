@@ -95,4 +95,11 @@ export const api = {
   // Meetings
   getMeetingLink: (bookingId: number) => request(`/meetings/${bookingId}`),
   updateMeetingStatus: (bookingId: number, status: string) => request(`/meetings/${bookingId}/status`, { method: 'PATCH', body: JSON.stringify({ status }) }),
+
+  // Payments
+  createPaymentOrder: (body: object) => request<any>('/payments/create-order', { method: 'POST', body: JSON.stringify(body) }),
+  verifyPayment: (body: object) => request<any>('/payments/verify', { method: 'POST', body: JSON.stringify(body) }),
+
+  // Shared Links
+  getServiceByToken: (token: string) => request<any>(`/user/services/shared/${token}`),
 };

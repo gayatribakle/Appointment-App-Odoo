@@ -2,17 +2,17 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { api } from '../../services/api';
 import { format, addDays, startOfDay } from 'date-fns';
-import { ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, Link2 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import PaymentModal from '../../components/PaymentModal';
 
-export default function ServiceDetail() {
-  const { id } = useParams();
-  console.log('🔍 ServiceDetail Rendering, ID:', id);
+export default function SharedServiceDetail() {
+  const { token } = useParams();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [service, setService] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'));
   const [selectedProvider, setSelectedProvider] = useState<any>(null);
   const [selectedSlot, setSelectedSlot] = useState<any>(null);
@@ -33,25 +33,18 @@ export default function ServiceDetail() {
   const [pendingBooking, setPendingBooking] = useState<any>(null);
 
   useEffect(() => {
-    console.log('📡 Fetching Service Detail for ID:', id);
-    api.getServiceDetailPublic(Number(id))
+    if (!token) return;
+    api.getServiceByToken(token)
       .then((d: any) => {
-        console.log('✅ Service Data Received:', d);
         setService(d);
-        setResponses(d.questions.map((q: any) => ({ question_id: q.id, response_text: '' })));
+        setResponses(d.questions?.map((q: any) => ({ question_id: q.id, response_text: '' })) || []);
       })
-      .catch(err => {
-        console.error('❌ Service Fetch Error:', err);
-      })
+      .catch((err: any) => setError(err.message || 'Invalid or expired link.'))
       .finally(() => setLoading(false));
-  }, [id]);
+  }, [token]);
 
-  if (loading) return <div className="loading-center"><div className="spinner" /></div>;
-  if (!service) return <div className="alert alert-error">Service not found</div>;
-
-  const filteredSlots = service.available_slots.filter((s: any) => {
-    // Robust date comparison: convert slot_date to local YYYY-MM-DD
-    const sDate = new Date(s.slot_date).toLocaleDateString('en-CA'); // 'en-CA' gives YYYY-MM-DD
+  const filteredSlots = (service?.available_slots || []).filter((s: any) => {
+    const sDate = new Date(s.slot_date).toLocaleDateString('en-CA');
     const matchesDate = sDate === selectedDate;
     const matchesProvider = !selectedProvider || s.provider_id === selectedProvider.id;
     return matchesDate && matchesProvider;
@@ -60,17 +53,12 @@ export default function ServiceDetail() {
   const handleBooking = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedSlot) return alert('Please select a time slot');
+    if (!user) return alert('Please log in to book this appointment.');
 
-    // Validations
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(form.customer_email)) {
-      return alert('Please enter a valid email address.');
-    }
-
+    if (!emailRegex.test(form.customer_email)) return alert('Please enter a valid email address.');
     const phoneRegex = /^[0-9+()-\s]{10,}$/;
-    if (!phoneRegex.test(form.customer_phone)) {
-      return alert('Please enter a valid phone number (min 10 digits).');
-    }
+    if (!phoneRegex.test(form.customer_phone)) return alert('Please enter a valid phone number (min 10 digits).');
 
     setSubmitting(true);
     try {
@@ -89,6 +77,21 @@ export default function ServiceDetail() {
     } catch (err: any) { alert(err.message); }
     finally { setSubmitting(false); }
   };
+
+  if (loading) return <div className="loading-center"><div className="spinner" /></div>;
+  
+  if (error) return (
+    <div style={{ maxWidth: 500, margin: '60px auto', textAlign: 'center' }}>
+      <div className="card" style={{ padding: 40 }}>
+        <Link2 size={48} style={{ opacity: 0.3, marginBottom: 16, color: '#ef4444' }} />
+        <h2 style={{ fontSize: '1.3rem', fontWeight: 700, marginBottom: 8 }}>Invalid Link</h2>
+        <p style={{ color: 'var(--text-muted)', marginBottom: 24 }}>{error}</p>
+        <button className="btn btn-primary" onClick={() => navigate('/login')}>Go to Login</button>
+      </div>
+    </div>
+  );
+
+  if (!service) return <div className="alert alert-error">Service not found</div>;
 
   if (booked) {
     return (
@@ -112,12 +115,6 @@ export default function ServiceDetail() {
               <span style={{ color: 'var(--text-muted)' }}>Time:</span>
               <span style={{ fontWeight: 600 }}>{selectedSlot.start_time.slice(0, 5)}</span>
             </div>
-            {selectedSlot.provider_name && (
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-                <span style={{ color: 'var(--text-muted)' }}>Provider:</span>
-                <span style={{ fontWeight: 600 }}>{selectedSlot.provider_name}</span>
-              </div>
-            )}
             {Number(service.advance_payment) > 0 && (
               <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 16, paddingTop: 16, borderTop: '1px solid var(--border)' }}>
                 <span style={{ color: 'var(--text-muted)' }}>Amount Paid:</span>
@@ -125,9 +122,11 @@ export default function ServiceDetail() {
               </div>
             )}
           </div>
-          <button className="btn btn-primary" style={{ width: '100%' }} onClick={() => navigate('/my-bookings')}>
-            View My Bookings
-          </button>
+          {user ? (
+            <button className="btn btn-primary" style={{ width: '100%' }} onClick={() => navigate('/my-bookings')}>View My Bookings</button>
+          ) : (
+            <button className="btn btn-primary" style={{ width: '100%' }} onClick={() => navigate('/login')}>Login to Manage</button>
+          )}
         </div>
       </div>
     );
@@ -153,10 +152,18 @@ export default function ServiceDetail() {
   }
 
   return (
-    <div style={{ maxWidth: 1000, margin: '0 auto' }}>
-      <button className="btn btn-secondary btn-sm" style={{ marginBottom: 20 }} onClick={() => navigate(-1)}>
-        <ArrowLeft size={16} /> Back to Services
-      </button>
+    <div style={{ maxWidth: 1000, margin: '0 auto', padding: '40px 20px' }}>
+      {/* Shared link badge */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 24, padding: '10px 16px', background: 'rgba(99, 102, 241, 0.1)', border: '1px solid rgba(99, 102, 241, 0.25)', borderRadius: 10, width: 'fit-content' }}>
+        <Link2 size={16} color="#6366f1" />
+        <span style={{ fontSize: '0.85rem', color: '#a5b4fc' }}>You are viewing a privately shared appointment link</span>
+      </div>
+
+      {!user && (
+        <div className="alert alert-error" style={{ marginBottom: 20 }}>
+          You must <a href="/login" style={{ color: '#6366f1', fontWeight: 600, textDecoration: 'underline' }}>log in</a> to book this appointment.
+        </div>
+      )}
 
       <div className="grid-2">
         <div>
@@ -203,11 +210,8 @@ export default function ServiceDetail() {
               <div style={{ display: 'flex', gap: 10, overflowX: 'auto', paddingBottom: 10 }}>
                 {[...Array(21)].map((_, i) => {
                   const d = addDays(startOfDay(new Date()), i);
-                  
-                  // Range check
                   if (service.start_date && d < startOfDay(new Date(service.start_date))) return null;
                   if (service.end_date && d > startOfDay(new Date(service.end_date))) return null;
-                  
                   const ds = format(d, 'yyyy-MM-dd');
                   return (
                     <button key={ds} className={`chip ${selectedDate === ds ? 'active' : ''}`}
@@ -233,16 +237,12 @@ export default function ServiceDetail() {
                 ))}
                 {filteredSlots.length === 0 && (
                   <div style={{ gridColumn: '1/-1', padding: '20px 0', textAlign: 'center', background: 'rgba(255,255,255,0.03)', borderRadius: 12 }}>
-                    {service.available_slots.length === 0 ? (
-                      <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
-                        📅 The organizer hasn't opened any slots for this service yet.
-                      </p>
-                    ) : (
-                      <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
-                        ❌ No slots available for {format(new Date(selectedDate), 'EEEE, MMM d')}.
-                        <br/><span style={{ fontSize: '0.8rem', opacity: 0.7 }}>Try selecting another date above.</span>
-                      </p>
-                    )}
+                    <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+                      {service.available_slots?.length === 0 
+                        ? '📅 No slots have been opened for this service yet.'
+                        : `❌ No slots available for ${format(new Date(selectedDate), 'EEEE, MMM d')}.`
+                      }
+                    </p>
                   </div>
                 )}
               </div>
@@ -267,71 +267,27 @@ export default function ServiceDetail() {
                 <input className="form-input" placeholder="+91 XXXXX XXXXX" value={form.customer_phone} onChange={e => setForm((f: any) => ({ ...f, customer_phone: e.target.value }))} required />
               </div>
 
-
-
-              <div className="card" style={{ background: 'rgba(99, 102, 241, 0.05)', border: '1px solid rgba(99, 102, 241, 0.2)', marginTop: 24 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
-                  <input type="checkbox" id="pre_meeting" checked={form.pre_meeting_needed} onChange={e => setForm((f: any) => ({ ...f, pre_meeting_needed: e.target.checked }))} />
-                  <label htmlFor="pre_meeting" className="form-label" style={{ marginBottom: 0, fontWeight: 700, color: 'var(--primary)' }}>
-                    I have doubts and need a consultation before the actual appointment
-                  </label>
-                </div>
-
-                {form.pre_meeting_needed && (
-                  <div style={{ paddingLeft: 26, display: 'flex', flexDirection: 'column', gap: 16, marginTop: 12 }}>
-                    <div>
-                      <label className="form-label">Consultation Mode</label>
-                      <div style={{ display: 'flex', gap: 20, marginTop: 4 }}>
-                        <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: '0.85rem' }}>
-                          <input type="radio" name="pre_meeting_type" value="OFFLINE" checked={form.pre_meeting_type === 'OFFLINE'} onChange={e => setForm((f: any) => ({ ...f, pre_meeting_type: e.target.value }))} />
-                          <span>Offline</span>
-                        </label>
-                        <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: '0.85rem' }}>
-                          <input type="radio" name="pre_meeting_type" value="ONLINE" checked={form.pre_meeting_type === 'ONLINE'} onChange={e => setForm((f: any) => ({ ...f, pre_meeting_type: e.target.value }))} />
-                          <span>Online</span>
-                        </label>
-                      </div>
+              {service.questions?.length > 0 && (
+                <div style={{ marginTop: 16 }}>
+                  <label className="form-label" style={{ fontWeight: 700 }}>Additional Questions</label>
+                  {service.questions.map((q: any, i: number) => (
+                    <div key={q.id} className="form-group">
+                      <label className="form-label">{q.question_text} {q.is_required && '*'}</label>
+                      <input className="form-input" required={q.is_required}
+                        value={responses[i]?.response_text || ''}
+                        onChange={e => {
+                          const updated = [...responses];
+                          updated[i] = { question_id: q.id, response_text: e.target.value };
+                          setResponses(updated);
+                        }} />
                     </div>
-                    <div>
-                      <label className="form-label">Preferred Consultation Time</label>
-                      <input className="form-input" type="datetime-local" value={form.pre_meeting_time || ''} onChange={e => setForm((f: any) => ({ ...f, pre_meeting_time: e.target.value }))} required />
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {service.questions.map((q: any, i: number) => (
-                <div className="form-group" key={q.id}>
-                  <label className="form-label">{q.question_text}</label>
-                  <input className="form-input" required={q.is_required}
-                    value={responses[i]?.response_text}
-                    onChange={e => {
-                      const newR = [...responses];
-                      newR[i] = { ...newR[i], response_text: e.target.value };
-                      setResponses(newR);
-                    }}
-                  />
+                  ))}
                 </div>
-              ))}
+              )}
 
-              <div className="form-group">
-                <label className="form-label">Notes (Optional)</label>
-                <textarea className="form-textarea" value={form.notes} onChange={e => setForm((f: any) => ({ ...f, notes: e.target.value }))} />
-              </div>
-
-              <div style={{ marginTop: 32, padding: 20, background: 'var(--surface2)', borderRadius: 12 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
-                  <span style={{ color: 'var(--text-muted)' }}>Advance Payment</span>
-                  <span style={{ fontWeight: 700 }}>₹{parseFloat(service.advance_payment).toLocaleString('en-IN')}</span>
-                </div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: 20 }}>
-                  You will be redirected to payment after clicking confirm.
-                </div>
-                <button type="submit" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}
-                  disabled={submitting}>
-                  {submitting ? 'Processing...' : `Confirm Booking ₹${parseFloat(service.advance_payment)}`}
-                </button>
-              </div>
+              <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: 20 }} disabled={submitting || !user}>
+                {!user ? 'Login Required to Book' : submitting ? 'Booking...' : `Confirm Booking${Number(service.advance_payment) > 0 ? ` • ₹${Number(service.advance_payment).toLocaleString('en-IN')}` : ''}`}
+              </button>
             </form>
           </div>
         </div>

@@ -76,7 +76,7 @@ export default function MyBookings() {
                 {b.meeting_type === 'ONLINE' && ['pending', 'confirmed'].includes(b.status) && (
                   <button 
                     className="btn btn-primary btn-sm" 
-                    onClick={() => window.location.href=`/meeting/${b.id}`}
+                    onClick={() => window.location.href=`/join/${b.id}`}
                   >
                     <Video size={14} /> Join Meeting
                   </button>

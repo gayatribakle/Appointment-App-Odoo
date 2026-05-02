@@ -1,34 +1,33 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router';
-import { AuthProvider } from './context/AuthContext';
-import { NotificationProvider } from './context/NotificationContext';
+import { AuthProvider } from '../context/AuthContext';
+import { NotificationProvider } from '../context/NotificationContext';
 import { Toaster } from 'react-hot-toast';
-import Layout from './components/Layout';
-import AdminLayout from './components/AdminLayout';
-import UserLayout from './components/UserLayout';
+import Layout from '../components/Layout';
+import AdminLayout from '../components/AdminLayout';
+import UserLayout from '../components/UserLayout';
 
-import Login from './pages/Login';
-import Signup from './pages/Signup';
+import Login from '../pages/Login';
+import Signup from '../pages/Signup';
 
 // Organizer Pages
-import Dashboard from './pages/Dashboard';
-import Services from './pages/Services';
-import Bookings from './pages/Bookings';
-import CalendarView from './pages/CalendarView';
-import Reports from './pages/Reports';
-import Profile from './pages/Profile';
+import Dashboard from '../pages/Dashboard';
+import Services from '../pages/Services';
+import Bookings from '../pages/Bookings';
+import CalendarView from '../pages/CalendarView';
+import Reports from '../pages/Reports';
+import Profile from '../pages/Profile';
 
 // Admin Pages
-import AdminDashboard from './pages/admin/AdminDashboard';
-import AdminServices from './pages/admin/AdminServices';
-import AdminUsers from './pages/admin/AdminUsers';
-import AdminBookings from './pages/admin/AdminBookings';
+import AdminDashboard from '../pages/admin/AdminDashboard';
+import AdminServices from '../pages/admin/AdminServices';
+import AdminUsers from '../pages/admin/AdminUsers';
+import AdminBookings from '../pages/admin/AdminBookings';
 
 // User Pages
-import Home from './pages/user/Home';
-import ServiceDetail from './pages/user/ServiceDetail';
-import SharedServiceDetail from './pages/user/SharedServiceDetail';
-import MyBookings from './pages/user/MyBookings';
-import MeetingRoom from './pages/MeetingRoom';
+import Home from '../pages/user/Home';
+import ServiceDetail from '../pages/user/ServiceDetail';
+import MyBookings from '../pages/user/MyBookings';
+import MeetingRoom from '../pages/MeetingRoom';
 
 export default function App() {
   return (
@@ -41,7 +40,6 @@ export default function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/" element={<Navigate to="/login" replace />} />
-            <Route path="/book/:token" element={<SharedServiceDetail />} />
 
             {/* Organizer Protected Routes */}
             <Route element={<Layout />}>
@@ -68,8 +66,8 @@ export default function App() {
               <Route path="/home" element={<Home />} />
               <Route path="/services/:id" element={<ServiceDetail />} />
               <Route path="/my-bookings" element={<MyBookings />} />
-              <Route path="/join/:bookingId" element={<MeetingRoom />} />
-              <Route path="/my-profile" element={<Profile />} />
+              <Route path="/meeting/:bookingId" element={<MeetingRoom />} />
+              <Route path="/profile" element={<Profile />} />
             </Route>
 
             {/* Catch-all */}

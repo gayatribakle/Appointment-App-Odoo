@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { api } from '../services/api';
-import { Plus, Pencil, Trash2, Globe, Lock, Zap, Clock, X, Check } from 'lucide-react';
+import { Plus, Pencil, Trash2, Globe, Lock, Zap, Clock, X, Check, Share2 } from 'lucide-react';
 
 const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
@@ -168,6 +168,19 @@ export default function Services() {
                   <Zap size={13} /> {genLoading === svc.id ? 'Generating...' : 'Gen Slots'}
                 </button>
               </div>
+              {svc.private_link_token && (
+                <button
+                  className="btn btn-sm btn-secondary"
+                  style={{ width: '100%', marginTop: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, background: 'rgba(99, 102, 241, 0.1)', border: '1px solid rgba(99, 102, 241, 0.3)', color: '#a5b4fc' }}
+                  onClick={() => {
+                    const link = `${window.location.origin}/book/${svc.private_link_token}`;
+                    navigator.clipboard.writeText(link);
+                    alert('Share link copied!\n\n' + link);
+                  }}
+                >
+                  <Share2 size={13} /> Share Appointment Link
+                </button>
+              )}
             </div>
           ))}
         </div>

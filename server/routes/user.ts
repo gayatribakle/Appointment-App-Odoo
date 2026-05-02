@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import {
-  getActiveServices, getServiceDetailPublic,
+  getActiveServices, getServiceDetailPublic, getServiceByPrivateToken,
   createBooking, getMyBookings, cancelMyBooking, rescheduleMyBooking
 } from '../controllers/userController.js';
 import { verifyToken, isUser } from '../middleware/authMiddleware.js';
@@ -9,6 +9,7 @@ const router = Router();
 
 // Public (no auth required for browsing)
 router.get('/services', getActiveServices);
+router.get('/services/shared/:token', getServiceByPrivateToken);
 router.get('/services/:id', getServiceDetailPublic);
 
 // Authenticated user routes

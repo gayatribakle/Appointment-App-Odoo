@@ -13,6 +13,7 @@ import providerRoutes from './routes/providers.js';
 import { createServer } from 'http';
 import { initSocket } from './socket.js';
 import notificationRoutes from './routes/notifications.js';
+import paymentRoutes from './routes/payments.js';
 import { verifyToken } from './middleware/authMiddleware.js';
 import { getMeetingLink, updateMeetingStatus } from './controllers/meetingController.js';
 
@@ -43,6 +44,7 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/admin', adminRoutes);            
 app.use('/api/user', userRoutes);              
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/payments', paymentRoutes);
 
 // Meeting Routes
 app.get('/api/meetings/:bookingId', verifyToken, getMeetingLink);

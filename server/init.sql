@@ -52,6 +52,8 @@ CREATE TABLE services (
   auto_assign_provider BOOLEAN DEFAULT TRUE,
   is_published BOOLEAN DEFAULT FALSE,
   private_link_token VARCHAR(100) UNIQUE,
+  start_date DATE,
+  end_date DATE,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -96,6 +98,15 @@ CREATE TABLE bookings (
   customer_phone VARCHAR(20),
   status VARCHAR(30) NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'confirmed', 'rejected', 'cancelled', 'rescheduled')),
   notes TEXT,
+  reference_code VARCHAR(20) UNIQUE,
+  meeting_type VARCHAR(50) DEFAULT 'OFFLINE',
+  meeting_id VARCHAR(100),
+  meeting_link TEXT,
+  meeting_status VARCHAR(50),
+  pre_meeting_needed BOOLEAN DEFAULT FALSE,
+  pre_meeting_type VARCHAR(50) DEFAULT 'OFFLINE',
+  pre_meeting_time TIMESTAMPTZ,
+  pre_meeting_link TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -113,6 +124,7 @@ CREATE TABLE payments (
   currency VARCHAR(10) NOT NULL DEFAULT 'INR',
   status VARCHAR(30) NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'paid', 'refunded', 'failed')),
   transaction_id VARCHAR(100),
+  gateway_order_id VARCHAR(100),
   paid_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );

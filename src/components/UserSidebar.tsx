@@ -7,7 +7,7 @@ import {
 const navItems = [
   { to: '/home', icon: Home, label: 'Home' },
   { to: '/my-bookings', icon: Clock, label: 'My Bookings' },
-  { to: '/profile', icon: User, label: 'Profile' },
+  { to: '/my-profile', icon: User, label: 'Profile' },
 ];
 
 export default function UserSidebar() {

@@ -60,8 +60,10 @@ export const createBooking = async (req: AuthRequest, res: Response): Promise<vo
       if (existing.rows.length) { res.status(409).json({ error: 'You already have a booking for this slot.' }); await client.query('ROLLBACK'); return; }
       
       const refCode = 'BS-' + crypto.randomBytes(4).toString('hex').toUpperCase();
-      const status = service.auto_confirm ? 'confirmed' : 'pending';
-      
+      let status = service.auto_confirm ? 'confirmed' : 'pending';
+      if (Number(service.advance_payment) > 0) {
+        status = 'pending';
+      }
       // Main Meeting
       let meetingId = null;
       let meetingLink = null;
@@ -89,7 +91,7 @@ export const createBooking = async (req: AuthRequest, res: Response): Promise<vo
         [
           slot_id, req.user!.id, service_id, customer_name, customer_email, customer_phone, 
           status, notes || null, refCode, meeting_type, meetingId, meetingLink, meetingStatus,
-          pre_meeting_needed, pre_meeting_type, pre_meeting_time, preMeetingLink
+          pre_meeting_needed, pre_meeting_type, pre_meeting_time || null, preMeetingLink
         ]
       );
       const bookingId = bookingRes.rows[0].id;
@@ -139,14 +141,60 @@ export const createBooking = async (req: AuthRequest, res: Response): Promise<vo
 
 export const cancelMyBooking = async (req: AuthRequest, res: Response): Promise<void> => {
   const { id } = req.params;
+  const client = await pool.connect();
   try {
-    const result = await pool.query(
-      "UPDATE bookings SET status='cancelled' WHERE id=$1 AND customer_id=$2 AND status='pending' RETURNING *",
-      [id, req.user!.id]
+    await client.query('BEGIN');
+    const bookingRes = await client.query(`
+      SELECT b.*, s.title as service_title, s.organizer_id, sl.slot_date, sl.start_time
+      FROM bookings b
+      JOIN services s ON b.service_id = s.id
+      JOIN slots sl ON b.slot_id = sl.id
+      WHERE b.id=$1 AND b.customer_id=$2
+    `, [id, req.user!.id]);
+    
+    if (!bookingRes.rows.length) { 
+      res.status(404).json({ error: 'Booking not found or cannot be cancelled.' }); 
+      await client.query('ROLLBACK');
+      return; 
+    }
+    const booking = bookingRes.rows[0];
+    if (booking.status === 'cancelled' || booking.status === 'rejected') {
+      res.status(400).json({ error: 'Booking is already cancelled or rejected.' });
+      await client.query('ROLLBACK');
+      return;
+    }
+    if (booking.status === 'confirmed') {
+      await client.query('UPDATE slots SET booked_count = booked_count - 1 WHERE id=$1 AND booked_count > 0', [booking.slot_id]);
+    }
+    const updated = await client.query(
+      "UPDATE bookings SET status='cancelled' WHERE id=$1 RETURNING *",
+      [id]
     );
-    if (!result.rows.length) { res.status(404).json({ error: 'Booking not found or cannot be cancelled.' }); return; }
-    res.json(result.rows[0]);
-  } catch (err: any) { res.status(500).json({ error: err.message }); }
+    await client.query('COMMIT');
+
+    // Notify Customer
+    await createNotification(
+      booking.customer_id,
+      'Booking Cancelled',
+      `You have successfully cancelled your booking for "${booking.service_title}".`,
+      'info'
+    );
+
+    // Notify Organizer
+    await createNotification(
+      booking.organizer_id,
+      'Booking Cancelled by Customer',
+      `The customer (${booking.customer_name || 'A customer'}) has cancelled their booking for "${booking.service_title}" on ${new Date(booking.slot_date).toLocaleDateString()} at ${booking.start_time.slice(0, 5)}.`,
+      'warning'
+    );
+
+    res.json(updated.rows[0]);
+  } catch (err: any) { 
+    await client.query('ROLLBACK');
+    res.status(500).json({ error: err.message }); 
+  } finally {
+    client.release();
+  }
 };
 
 export const rescheduleMyBooking = async (req: AuthRequest, res: Response): Promise<void> => {
@@ -200,6 +248,44 @@ export const getServiceDetailPublic = async (req: any, res: Response): Promise<v
        WHERE sl.service_id = $1 AND sl.booked_count < sl.capacity
        ORDER BY sl.slot_date, sl.start_time`,
       [id]
+    );
+    
+    res.json({ 
+      ...service, 
+      providers: providers.rows, 
+      questions: questions.rows,
+      available_slots: slots.rows 
+    });
+  } catch (err: any) { res.status(500).json({ error: err.message }); }
+};
+
+export const getServiceByPrivateToken = async (req: any, res: Response): Promise<void> => {
+  const { token } = req.params;
+  try {
+    const svcRes = await pool.query('SELECT * FROM services WHERE private_link_token = $1', [token]);
+    if (!svcRes.rows.length) { res.status(404).json({ error: 'Invalid or expired link.' }); return; }
+    const service = svcRes.rows[0];
+
+    // Get organizer name
+    const orgRes = await pool.query('SELECT name FROM users WHERE id = $1', [service.organizer_id]);
+    service.organizer_name = orgRes.rows[0]?.name || 'Unknown';
+
+    const providers = await pool.query(
+      `SELECT p.* FROM providers p 
+       JOIN service_providers sp ON p.id = sp.provider_id 
+       WHERE sp.service_id = $1 AND p.is_active = TRUE`, 
+      [service.id]
+    );
+    
+    const questions = await pool.query('SELECT * FROM questions WHERE service_id = $1 ORDER BY sort_order', [service.id]);
+    
+    const slots = await pool.query(
+      `SELECT sl.*, p.name as provider_name 
+       FROM slots sl 
+       LEFT JOIN providers p ON sl.provider_id = p.id 
+       WHERE sl.service_id = $1 AND sl.booked_count < sl.capacity
+       ORDER BY sl.slot_date, sl.start_time`,
+      [service.id]
     );
     
     res.json({ 
