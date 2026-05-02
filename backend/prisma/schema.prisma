@@ -1,0 +1,93 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Enums ───────────────────────────────────────────────
+
+enum UserRole {
+  ADMIN
+  CUSTOMER
+}
+
+enum UserStatus {
+  ACTIVE
+  BLOCKED
+}
+
+enum ProviderStatus {
+  AVAILABLE
+  BUSY
+  OFF_DUTY
+}
+
+enum AppointmentStatus {
+  CONFIRMED
+  PENDING
+  COMPLETED
+  CANCELLED
+}
+
+// ─── Models ──────────────────────────────────────────────
+
+model User {
+  id        String     @id @default(uuid())
+  name      String
+  email     String     @unique
+  password  String
+  role      UserRole   @default(CUSTOMER)
+  status    UserStatus @default(ACTIVE)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Provider {
+  id           String         @id @default(uuid())
+  name         String
+  email        String         @unique
+  specialty    String
+  status       ProviderStatus @default(AVAILABLE)
+  appointments Int            @default(0)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+}
+
+model Appointment {
+  id         String            @id @default(uuid())
+  customer   String
+  provider   String
+  service    String
+  date       String            // stored as "YYYY-MM-DD"
+  time       String            // stored as "HH:MM"
+  duration   String            @default("30 min")
+  status     AppointmentStatus @default(CONFIRMED)
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+}
+
+model TimeSlot {
+  id          String   @id @default(uuid())
+  name        String
+  startTime   String
+  endTime     String
+  maxBookings Int      @default(10)
+  duration    Int      @default(30)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model SystemSettings {
+  id                      String   @id @default("singleton")
+  maxBookingsPerDay       Int      @default(50)
+  bookingWindowDays       Int      @default(30)
+  cancellationWindowHours Int      @default(24)
+  autoConfirmBookings     Boolean  @default(true)
+  requireApproval         Boolean  @default(false)
+  emailNotifications      Boolean  @default(true)
+  smsNotifications        Boolean  @default(false)
+  updatedAt               DateTime @updatedAt
+}

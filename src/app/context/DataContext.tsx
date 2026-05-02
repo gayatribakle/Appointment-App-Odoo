@@ -1,51 +1,20 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, { createContext, useContext, useState, ReactNode, useEffect, useCallback } from "react";
+import { api } from "../services/api";
 
 // Types
-export type User = { id: string; name: string; email: string; role: string; status: string; joined: string; };
-export type Provider = { id: string; name: string; email: string; specialty: string; rating: number; appointments: number; status: string; joined: string; };
+export type User = { id: string; name: string; email: string; role: string; status: string; createdAt: string; };
+export type Provider = { id: string; name: string; email: string; specialty: string; status: string; appointments: number; createdAt: string; };
 export type Appointment = { id: string; customer: string; provider: string; service: string; date: string; time: string; duration: string; status: string; };
 
 export type DashboardStats = {
   totalUsers: number;
   totalProviders: number;
   totalAppointments: number;
-  revenue: number;
+  confirmedAppts: number;
+  recentAppts: Appointment[];
 };
 
-// Initial Data
-const initialUsers: User[] = [
-  { id: "1", name: "John Doe", email: "john.doe@email.com", role: "Customer", status: "Active", joined: "2025-01-15" },
-  { id: "2", name: "Jane Smith", email: "jane.smith@email.com", role: "Customer", status: "Active", joined: "2025-02-20" },
-  { id: "3", name: "Mike Johnson", email: "mike.j@email.com", role: "Admin", status: "Active", joined: "2024-11-10" },
-  { id: "4", name: "Sarah Williams", email: "sarah.w@email.com", role: "Customer", status: "Inactive", joined: "2025-03-05" },
-  { id: "5", name: "Tom Brown", email: "tom.brown@email.com", role: "Manager", status: "Active", joined: "2024-12-18" },
-  { id: "6", name: "Emily Davis", email: "emily.d@email.com", role: "Customer", status: "Active", joined: "2025-04-12" },
-  { id: "7", name: "Robert Wilson", email: "robert.w@email.com", role: "Customer", status: "Inactive", joined: "2025-01-28" },
-  { id: "8", name: "Lisa Anderson", email: "lisa.a@email.com", role: "Manager", status: "Active", joined: "2025-02-14" },
-];
-
-const initialProviders: Provider[] = [
-  { id: "1", name: "Dr. Amanda Chen", email: "a.chen@clinic.com", specialty: "General Medicine", rating: 4.8, appointments: 142, status: "Available", joined: "2024-08-15" },
-  { id: "2", name: "Dr. Marcus Roberts", email: "m.roberts@clinic.com", specialty: "Cardiology", rating: 4.9, appointments: 198, status: "Available", joined: "2024-06-10" },
-  { id: "3", name: "Dr. Jessica Park", email: "j.park@clinic.com", specialty: "Pediatrics", rating: 4.7, appointments: 167, status: "Busy", joined: "2024-09-22" },
-  { id: "4", name: "Dr. David Kumar", email: "d.kumar@clinic.com", specialty: "Dermatology", rating: 4.6, appointments: 89, status: "Available", joined: "2025-01-08" },
-  { id: "5", name: "Dr. Sophie Martinez", email: "s.martinez@clinic.com", specialty: "Orthopedics", rating: 4.9, appointments: 213, status: "Off-duty", joined: "2024-05-12" },
-  { id: "6", name: "Dr. James Wilson", email: "j.wilson@clinic.com", specialty: "Neurology", rating: 4.8, appointments: 176, status: "Available", joined: "2024-10-03" },
-];
-
-const initialAppointments: Appointment[] = [
-  { id: "1", customer: "John Doe", provider: "Dr. Amanda Chen", service: "General Checkup", date: "2026-05-02", time: "10:00 AM", duration: "30 min", status: "Confirmed" },
-  { id: "2", customer: "Jane Smith", provider: "Dr. Marcus Roberts", service: "Cardiology Consultation", date: "2026-05-02", time: "11:30 AM", duration: "45 min", status: "Confirmed" },
-  { id: "3", customer: "Mike Johnson", provider: "Dr. Jessica Park", service: "Pediatric Visit", date: "2026-05-02", time: "2:00 PM", duration: "30 min", status: "Pending" },
-  { id: "4", customer: "Sarah Williams", provider: "Dr. David Kumar", service: "Skin Consultation", date: "2026-05-03", time: "9:00 AM", duration: "30 min", status: "Confirmed" },
-  { id: "5", customer: "Tom Brown", provider: "Dr. Sophie Martinez", service: "Orthopedic Follow-up", date: "2026-05-03", time: "3:30 PM", duration: "30 min", status: "Completed" },
-  { id: "6", customer: "Emily Davis", provider: "Dr. James Wilson", service: "Neurology Checkup", date: "2026-05-04", time: "10:30 AM", duration: "45 min", status: "Confirmed" },
-  { id: "7", customer: "Robert Wilson", provider: "Dr. Amanda Chen", service: "Annual Physical", date: "2026-05-04", time: "1:00 PM", duration: "60 min", status: "Pending" },
-  { id: "8", customer: "Lisa Anderson", provider: "Dr. Marcus Roberts", service: "Heart Screening", date: "2026-05-05", time: "11:00 AM", duration: "45 min", status: "Confirmed" },
-  { id: "9", customer: "Chris Martinez", provider: "Dr. Jessica Park", service: "Child Vaccination", date: "2026-05-05", time: "2:30 PM", duration: "20 min", status: "Cancelled" },
-  { id: "10", customer: "Anna Thompson", provider: "Dr. David Kumar", service: "Dermatology Treatment", date: "2026-05-06", time: "9:30 AM", duration: "30 min", status: "Confirmed" },
-];
-
+// Static data for charts (remains static for now unless backend provides it)
 export const bookingsData = [
   { month: "Jan", bookings: 145, revenue: 14500 },
   { month: "Feb", bookings: 162, revenue: 16200 },
@@ -92,10 +61,23 @@ type DataContextType = {
   users: User[];
   providers: Provider[];
   appointments: Appointment[];
+  timeSlots: any[];
+  systemSettings: any;
   stats: DashboardStats;
-  toggleUserStatus: (id: string) => void;
-  toggleProviderStatus: (id: string) => void;
-  addAppointment: (apt: Appointment) => void;
+  loading: boolean;
+  refreshAll: () => Promise<void>;
+  toggleUserStatus: (id: string, currentStatus: string) => Promise<void>;
+  toggleProviderStatus: (id: string, currentStatus: string) => Promise<void>;
+  addAppointment: (apt: Partial<Appointment>) => Promise<void>;
+  addProvider: (provider: Partial<Provider>) => Promise<void>;
+  addUser: (user: any) => Promise<void>;
+  deleteProvider: (id: string) => Promise<void>;
+  addTimeSlot: (slot: any) => Promise<void>;
+  toggleTimeSlot: (id: string, currentStatus: boolean) => Promise<void>;
+  deleteTimeSlot: (id: string) => Promise<void>;
+  updateSettings: (settings: any) => Promise<void>;
+  theme: 'light' | 'dark';
+  toggleTheme: () => void;
   bookingsData: typeof bookingsData;
   peakHoursData: typeof peakHoursData;
   serviceDistribution: typeof serviceDistribution;
@@ -105,41 +87,123 @@ type DataContextType = {
 const DataContext = createContext<DataContextType | undefined>(undefined);
 
 export function DataProvider({ children }: { children: ReactNode }) {
-  const [users, setUsers] = useState<User[]>(initialUsers);
-  const [providers, setProviders] = useState<Provider[]>(initialProviders);
-  const [appointments, setAppointments] = useState<Appointment[]>(initialAppointments);
+  const [users, setUsers] = useState<User[]>([]);
+  const [providers, setProviders] = useState<Provider[]>([]);
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [timeSlots, setTimeSlots] = useState<any[]>([]);
+  const [systemSettings, setSystemSettings] = useState<any>(null);
+  const [theme, setTheme] = useState<'light' | 'dark'>((localStorage.getItem('theme') as 'light' | 'dark') || 'light');
+  const [stats, setStats] = useState<DashboardStats>({
+    totalUsers: 0,
+    totalProviders: 0,
+    totalAppointments: 0,
+    confirmedAppts: 0,
+    recentAppts: []
+  });
+  const [loading, setLoading] = useState(true);
 
-  const toggleUserStatus = (id: string) => {
-    setUsers(prev => prev.map(u => u.id === id ? { ...u, status: u.status === "Active" ? "Inactive" : "Active" } : u));
+  const refreshAll = useCallback(async () => {
+    try {
+      const [usersData, providersData, apptsData, statsData, slotsData, settingsData] = await Promise.all([
+        api.get('/admin/users'),
+        api.get('/admin/providers'),
+        api.get('/admin/appointments'),
+        api.get('/admin/dashboard'),
+        api.get('/admin/time-slots'),
+        api.get('/admin/settings')
+      ]);
+      setUsers(usersData);
+      setProviders(providersData);
+      setAppointments(apptsData);
+      setStats(statsData);
+      setTimeSlots(slotsData);
+      setSystemSettings(settingsData);
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Only refresh if token exists (logged in)
+    if (localStorage.getItem('token')) {
+      refreshAll();
+    }
+  }, [refreshAll]);
+
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
   };
 
-  const toggleProviderStatus = (id: string) => {
-    setProviders(prev => prev.map(p => {
-      if (p.id === id) {
-        let newStatus = "Available";
-        if (p.status === "Available") newStatus = "Busy";
-        else if (p.status === "Busy") newStatus = "Off-duty";
-        return { ...p, status: newStatus };
-      }
-      return p;
-    }));
+  const toggleUserStatus = async (id: string, currentStatus: string) => {
+    const newStatus = currentStatus === "ACTIVE" ? "BLOCKED" : "ACTIVE";
+    await api.patch(`/admin/users/${id}/status`, { status: newStatus });
+    await refreshAll();
   };
 
-  const addAppointment = (apt: Appointment) => {
-    setAppointments(prev => [...prev, apt]);
+  const toggleProviderStatus = async (id: string, currentStatus: string) => {
+    const statuses = ["AVAILABLE", "BUSY", "OFF_DUTY"];
+    const currentIndex = statuses.indexOf(currentStatus);
+    const newStatus = statuses[(currentIndex + 1) % statuses.length];
+    await api.patch(`/admin/providers/${id}/status`, { status: newStatus });
+    await refreshAll();
   };
 
-  const stats: DashboardStats = {
-    totalUsers: users.length,
-    totalProviders: providers.length,
-    totalAppointments: appointments.length,
-    revenue: 105000, // Static for now, or calculate based on appointments if there's logic for it
+  const addAppointment = async (apt: Partial<Appointment>) => {
+    await api.post('/admin/appointments', apt);
+    await refreshAll();
+  };
+
+  const addProvider = async (provider: Partial<Provider>) => {
+    await api.post('/admin/providers', provider);
+    await refreshAll();
+  };
+
+  const addUser = async (user: any) => {
+    await api.post('/admin/users', user);
+    await refreshAll();
+  };
+
+  const deleteProvider = async (id: string) => {
+    await api.delete(`/admin/providers/${id}`);
+    await refreshAll();
+  };
+
+  const addTimeSlot = async (slot: any) => {
+    await api.post('/admin/time-slots', slot);
+    await refreshAll();
+  };
+
+  const toggleTimeSlot = async (id: string, currentStatus: boolean) => {
+    await api.patch(`/admin/time-slots/${id}/status`, { active: !currentStatus });
+    await refreshAll();
+  };
+
+  const deleteTimeSlot = async (id: string) => {
+    await api.delete(`/admin/time-slots/${id}`);
+    await refreshAll();
+  };
+
+  const updateSettings = async (settings: any) => {
+    await api.post('/admin/settings', settings);
+    await refreshAll();
   };
 
   return (
     <DataContext.Provider value={{
-      users, providers, appointments, stats,
-      toggleUserStatus, toggleProviderStatus, addAppointment,
+      users, providers, appointments, timeSlots, systemSettings, stats, loading,
+      refreshAll, toggleUserStatus, toggleProviderStatus, addAppointment, addProvider, addUser, deleteProvider,
+      addTimeSlot, toggleTimeSlot, deleteTimeSlot, updateSettings, theme, toggleTheme,
       bookingsData, peakHoursData, serviceDistribution, weekdayTrends
     }}>
       {children}
@@ -154,3 +218,4 @@ export function useData() {
   }
   return context;
 }
+

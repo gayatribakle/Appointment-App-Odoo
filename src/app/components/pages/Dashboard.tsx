@@ -8,9 +8,9 @@ export function Dashboard() {
   const { stats, appointments, bookingsData, peakHoursData, providers } = useData();
 
   // Compute provider utilization from providers state
-  const activeProviders = providers.filter(p => p.status === "Available").length;
-  const busyProviders = providers.filter(p => p.status === "Busy").length;
-  const offDutyProviders = providers.filter(p => p.status === "Off-duty").length;
+  const activeProviders = providers.filter(p => p.status === "AVAILABLE").length;
+  const busyProviders = providers.filter(p => p.status === "BUSY").length;
+  const offDutyProviders = providers.filter(p => p.status === "OFF_DUTY").length;
 
   const providerUtilization = [
     { name: "Available", value: activeProviders },
@@ -22,10 +22,10 @@ export function Dashboard() {
   const recentBookings = [...appointments].reverse().slice(0, 5);
 
   const kpiCards = [
-    { title: "Total Users", value: stats.totalUsers.toLocaleString(), change: "+12%", icon: Users, color: "bg-blue-500" },
-    { title: "Total Providers", value: stats.totalProviders.toLocaleString(), change: "+5%", icon: UserCog, color: "bg-green-500" },
-    { title: "Total Appointments", value: stats.totalAppointments.toLocaleString(), change: "+18%", icon: Calendar, color: "bg-indigo-600" },
-    { title: "Revenue", value: `₹${stats.revenue.toLocaleString()}`, change: "+23%", icon: TrendingUp, color: "bg-purple-500" },
+    { title: "Total Users", value: stats.totalUsers?.toLocaleString() || "0", change: "+0%", icon: Users, color: "bg-blue-500" },
+    { title: "Total Providers", value: stats.totalProviders?.toLocaleString() || "0", change: "+0%", icon: UserCog, color: "bg-green-500" },
+    { title: "Total Appointments", value: stats.totalAppointments?.toLocaleString() || "0", change: "+0%", icon: Calendar, color: "bg-indigo-600" },
+    { title: "Revenue", value: `₹${(stats as any).revenue?.toLocaleString() || "0"}`, change: "+0%", icon: TrendingUp, color: "bg-purple-500" },
   ];
 
   return (
@@ -57,31 +57,31 @@ export function Dashboard() {
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Bookings Over Time */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h3 className="text-lg text-gray-900 mb-4">Bookings Over Time</h3>
+        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6">
+          <h3 className="text-lg text-gray-900 dark:text-gray-100 mb-4">Bookings Over Time</h3>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={bookingsData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-              <XAxis dataKey="month" stroke="#6b7280" />
-              <YAxis stroke="#6b7280" />
-              <Tooltip />
+              <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
+              <XAxis dataKey="month" stroke={textColor} fontSize={12} />
+              <YAxis stroke={textColor} fontSize={12} />
+              <Tooltip contentStyle={tooltipStyle} />
               <Legend />
-              <Line type="monotone" dataKey="bookings" stroke="#4F46E5" strokeWidth={2} />
+              <Line type="monotone" dataKey="bookings" stroke="#6366f1" strokeWidth={3} dot={{ r: 4, fill: "#6366f1" }} activeDot={{ r: 6 }} />
             </LineChart>
           </ResponsiveContainer>
         </div>
 
         {/* Peak Booking Hours */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h3 className="text-lg text-gray-900 mb-4">Peak Booking Hours</h3>
+        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6">
+          <h3 className="text-lg text-gray-900 dark:text-gray-100 mb-4">Peak Booking Hours</h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={peakHoursData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-              <XAxis dataKey="hour" stroke="#6b7280" />
-              <YAxis stroke="#6b7280" />
-              <Tooltip />
+              <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
+              <XAxis dataKey="hour" stroke={textColor} fontSize={12} />
+              <YAxis stroke={textColor} fontSize={12} />
+              <Tooltip contentStyle={tooltipStyle} />
               <Legend />
-              <Bar dataKey="bookings" fill="#22C55E" radius={[8, 8, 0, 0]} />
+              <Bar dataKey="bookings" fill="#10b981" radius={[6, 6, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -90,8 +90,8 @@ export function Dashboard() {
       {/* Second Row: Pie Chart and Recent Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Provider Utilization */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h3 className="text-lg text-gray-900 mb-4">Provider Utilization</h3>
+        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6">
+          <h3 className="text-lg text-gray-900 dark:text-gray-100 mb-4">Provider Utilization</h3>
           <ResponsiveContainer width="100%" height={280}>
             <PieChart>
               <Pie
@@ -108,7 +108,7 @@ export function Dashboard() {
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
-              <Tooltip />
+              <Tooltip contentStyle={tooltipStyle} />
             </PieChart>
           </ResponsiveContainer>
         </div>
@@ -137,11 +137,11 @@ export function Dashboard() {
                     <td className="py-3 px-2">
                       <span
                         className={`px-2 py-1 text-xs rounded-full ${
-                          booking.status === "Confirmed"
+                          booking.status === "CONFIRMED"
                             ? "bg-green-100 text-green-700"
-                            : booking.status === "Pending"
+                            : booking.status === "PENDING"
                             ? "bg-yellow-100 text-yellow-700"
-                            : booking.status === "Completed"
+                            : booking.status === "COMPLETED"
                             ? "bg-blue-100 text-blue-700"
                             : "bg-red-100 text-red-700"
                         }`}

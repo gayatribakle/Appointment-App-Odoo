@@ -7,8 +7,13 @@ import { Appointments } from "./components/pages/Appointments";
 import { BookingRules } from "./components/pages/BookingRules";
 import { Reports } from "./components/pages/Reports";
 import { Settings } from "./components/pages/Settings";
+import { Login } from "./components/pages/Login";
 
 export const router = createBrowserRouter([
+  {
+    path: "/login",
+    Component: Login,
+  },
   {
     path: "/",
     Component: DashboardLayout,
@@ -23,3 +28,4 @@ export const router = createBrowserRouter([
     ],
   },
 ]);
+

@@ -1,12 +1,14 @@
 import { useState } from "react";
-import { Search, Filter, Eye, Calendar as CalendarIcon, ChevronDown, List, Grid, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, Filter, Eye, Calendar as CalendarIcon, ChevronDown, List, Grid, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 
 import { useData } from "../../context/DataContext";
 const daysInWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
+import { Appointment } from "../../context/DataContext";
+
 export function Appointments() {
-  const { appointments } = useData();
+  const { appointments, addAppointment, providers, loading } = useData();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("All");
   const [filterProvider, setFilterProvider] = useState("All");
@@ -14,11 +16,31 @@ export function Appointments() {
   const [viewMode, setViewMode] = useState<"table" | "calendar">("table");
   const [currentDate, setCurrentDate] = useState(new Date(2026, 4, 1)); // May 2026
 
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showDetailsModal, setShowDetailsModal] = useState<Appointment | null>(null);
+  const [newAppointment, setNewAppointment] = useState({ customer: "", provider: "", service: "", date: "", time: "", duration: "30 min" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleAddAppointment = async () => {
+    if (!newAppointment.customer || !newAppointment.provider || !newAppointment.service || !newAppointment.date || !newAppointment.time) return;
+    
+    setIsSubmitting(true);
+    try {
+      await addAppointment(newAppointment);
+      setShowAddModal(false);
+      setNewAppointment({ customer: "", provider: "", service: "", date: "", time: "", duration: "30 min" });
+    } catch (error: any) {
+      alert(error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const filteredAppointments = appointments.filter(appointment => {
     const matchesSearch =
       appointment.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
       appointment.service.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = filterStatus === "All" || appointment.status === filterStatus;
+    const matchesStatus = filterStatus === "All" || appointment.status === filterStatus.toUpperCase();
     const matchesProvider = filterProvider === "All" || appointment.provider === filterProvider;
     const matchesDate = !filterDate || appointment.date === filterDate;
     return matchesSearch && matchesStatus && matchesProvider && matchesDate;
@@ -26,10 +48,10 @@ export function Appointments() {
 
   const statusCounts = {
     total: appointments.length,
-    confirmed: appointments.filter(a => a.status === "Confirmed").length,
-    pending: appointments.filter(a => a.status === "Pending").length,
-    completed: appointments.filter(a => a.status === "Completed").length,
-    cancelled: appointments.filter(a => a.status === "Cancelled").length,
+    confirmed: appointments.filter(a => a.status === "CONFIRMED").length,
+    pending: appointments.filter(a => a.status === "PENDING").length,
+    completed: appointments.filter(a => a.status === "COMPLETED").length,
+    cancelled: appointments.filter(a => a.status === "CANCELLED").length,
   };
 
   // Calendar logic
@@ -64,6 +86,14 @@ export function Appointments() {
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
   };
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -72,7 +102,6 @@ export function Appointments() {
           <p className="text-gray-500">View and manage all appointments.</p>
         </div>
         <div className="flex items-center gap-3">
-          {/* View Toggle */}
           <div className="flex items-center gap-1 p-1 bg-gray-100 rounded-lg">
             <button
               onClick={() => setViewMode("table")}
@@ -93,7 +122,7 @@ export function Appointments() {
               Calendar
             </button>
           </div>
-          <button className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+          <button onClick={() => setShowAddModal(true)} className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
             <CalendarIcon className="w-5 h-5" />
             New Appointment
           </button>
@@ -156,7 +185,7 @@ export function Appointments() {
                 onChange={(e) => setFilterStatus(e.target.value)}
                 className="w-full pl-10 pr-8 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 appearance-none"
               >
-                <option>All Status</option>
+                <option>All</option>
                 <option>Confirmed</option>
                 <option>Pending</option>
                 <option>Completed</option>
@@ -171,12 +200,9 @@ export function Appointments() {
               className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
               <option>All Providers</option>
-              <option>Dr. Amanda Chen</option>
-              <option>Dr. Marcus Roberts</option>
-              <option>Dr. Jessica Park</option>
-              <option>Dr. David Kumar</option>
-              <option>Dr. Sophie Martinez</option>
-              <option>Dr. James Wilson</option>
+              {providers.map(p => (
+                <option key={p.id} value={p.name}>{p.name}</option>
+              ))}
             </select>
           </div>
         </div>
@@ -222,11 +248,11 @@ export function Appointments() {
                       <td className="px-6 py-4">
                         <span
                           className={`px-3 py-1 text-xs rounded-full ${
-                            appointment.status === "Confirmed"
+                            appointment.status === "CONFIRMED"
                               ? "bg-green-100 text-green-700"
-                              : appointment.status === "Pending"
+                              : appointment.status === "PENDING"
                               ? "bg-yellow-100 text-yellow-700"
-                              : appointment.status === "Completed"
+                              : appointment.status === "COMPLETED"
                               ? "bg-blue-100 text-blue-700"
                               : "bg-red-100 text-red-700"
                           }`}
@@ -235,13 +261,20 @@ export function Appointments() {
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <button className="flex items-center gap-2 px-3 py-1 text-xs text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+                        <button onClick={() => setShowDetailsModal(appointment)} className="flex items-center gap-2 px-3 py-1 text-xs text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
                           <Eye className="w-4 h-4" />
                           View Details
                         </button>
                       </td>
                     </tr>
                   ))}
+                  {filteredAppointments.length === 0 && (
+                    <tr>
+                      <td colSpan={7} className="px-6 py-10 text-center text-gray-500">
+                        No appointments found.
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
@@ -249,21 +282,6 @@ export function Appointments() {
 
           <div className="flex items-center justify-between text-sm text-gray-600">
             <p>Showing {filteredAppointments.length} of {appointments.length} appointments</p>
-            <div className="flex gap-2">
-              <button className="px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                Previous
-              </button>
-              <button className="px-3 py-1 bg-indigo-600 text-white rounded-lg">1</button>
-              <button className="px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                2
-              </button>
-              <button className="px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                3
-              </button>
-              <button className="px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                Next
-              </button>
-            </div>
           </div>
         </>
       )}
@@ -271,7 +289,6 @@ export function Appointments() {
       {/* Calendar View */}
       {viewMode === "calendar" && (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          {/* Calendar Header */}
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-xl text-gray-900">
               {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
@@ -292,16 +309,13 @@ export function Appointments() {
             </div>
           </div>
 
-          {/* Calendar Grid */}
           <div className="grid grid-cols-7 gap-2">
-            {/* Day Headers */}
             {daysInWeek.map(day => (
               <div key={day} className="text-center text-sm text-gray-500 font-medium py-2">
                 {day}
               </div>
             ))}
 
-            {/* Calendar Days */}
             {getDaysInMonth(currentDate).map((day, index) => {
               if (day === null) {
                 return <div key={`empty-${index}`} className="min-h-24 bg-gray-50 rounded-lg" />;
@@ -317,11 +331,11 @@ export function Appointments() {
                       <div
                         key={apt.id}
                         className={`text-xs p-1 rounded ${
-                          apt.status === "Confirmed"
+                          apt.status === "CONFIRMED"
                             ? "bg-green-100 text-green-700"
-                            : apt.status === "Pending"
+                            : apt.status === "PENDING"
                             ? "bg-yellow-100 text-yellow-700"
-                            : apt.status === "Completed"
+                            : apt.status === "COMPLETED"
                             ? "bg-blue-100 text-blue-700"
                             : "bg-red-100 text-red-700"
                         }`}
@@ -341,6 +355,79 @@ export function Appointments() {
           </div>
         </div>
       )}
+
+      {/* View Details Modal */}
+      {showDetailsModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-xl border border-gray-200">
+            <h3 className="text-xl font-semibold mb-4 text-gray-900">Appointment Details</h3>
+            <div className="space-y-3 text-sm">
+              <p><strong className="text-gray-700">Customer:</strong> <span className="text-gray-900">{showDetailsModal.customer}</span></p>
+              <p><strong className="text-gray-700">Provider:</strong> <span className="text-gray-900">{showDetailsModal.provider}</span></p>
+              <p><strong className="text-gray-700">Service:</strong> <span className="text-gray-900">{showDetailsModal.service}</span></p>
+              <p><strong className="text-gray-700">Date:</strong> <span className="text-gray-900">{showDetailsModal.date}</span></p>
+              <p><strong className="text-gray-700">Time:</strong> <span className="text-gray-900">{showDetailsModal.time}</span></p>
+              <p><strong className="text-gray-700">Duration:</strong> <span className="text-gray-900">{showDetailsModal.duration}</span></p>
+              <p><strong className="text-gray-700">Status:</strong> <span className={`px-2 py-0.5 rounded-full text-xs ${
+                showDetailsModal.status === "CONFIRMED" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"
+              }`}>{showDetailsModal.status}</span></p>
+            </div>
+            <div className="flex justify-end mt-6">
+              <button onClick={() => setShowDetailsModal(null)} className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">Close</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Appointment Modal */}
+      {showAddModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto shadow-xl border border-gray-200">
+            <h3 className="text-xl font-semibold mb-4 text-gray-900">New Appointment</h3>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Customer Name</label>
+                <input type="text" value={newAppointment.customer} onChange={e => setNewAppointment({...newAppointment, customer: e.target.value})} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="e.g. Alice Johnson" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Provider</label>
+                <select value={newAppointment.provider} onChange={e => setNewAppointment({...newAppointment, provider: e.target.value})} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
+                  <option value="">Select a provider...</option>
+                  {providers.filter(p => p.status !== "OFF_DUTY").map(p => (
+                    <option key={p.id} value={p.name}>{p.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Service</label>
+                <input type="text" value={newAppointment.service} onChange={e => setNewAppointment({...newAppointment, service: e.target.value})} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="e.g. Heart Checkup" />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                  <input type="date" value={newAppointment.date} onChange={e => setNewAppointment({...newAppointment, date: e.target.value})} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Time</label>
+                  <input type="time" value={newAppointment.time} onChange={e => setNewAppointment({...newAppointment, time: e.target.value})} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" />
+                </div>
+              </div>
+            </div>
+            <div className="flex justify-end gap-3 mt-6">
+              <button onClick={() => setShowAddModal(false)} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">Cancel</button>
+              <button 
+                onClick={handleAddAppointment} 
+                disabled={isSubmitting}
+                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 flex items-center gap-2"
+              >
+                {isSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
+                {isSubmitting ? "Booking..." : "Confirm Booking"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+

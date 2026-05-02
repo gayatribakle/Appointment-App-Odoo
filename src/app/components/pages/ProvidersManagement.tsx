@@ -1,21 +1,62 @@
 import { useState } from "react";
-import { Search, Filter, Edit2, UserPlus, Star } from "lucide-react";
+import { Search, Filter, Edit2, UserPlus, Trash2, Loader2 } from "lucide-react";
 
 import { useData } from "../../context/DataContext";
 
 export function ProvidersManagement() {
-  const { providers, toggleProviderStatus } = useData();
+  const { providers, toggleProviderStatus, addProvider, deleteProvider, loading } = useData();
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterSpecialty, setFilterSpecialty] = useState("All");
-  const [filterStatus, setFilterStatus] = useState("All");
+  const [filterSpecialty, setFilterSpecialty] = useState("All Specialties");
+  const [filterStatus, setFilterStatus] = useState("All Status");
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newProvider, setNewProvider] = useState({ name: "", email: "", specialty: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleAddProvider = async () => {
+    if (!newProvider.name || !newProvider.email || !newProvider.specialty) return;
+    setIsSubmitting(true);
+    try {
+      await addProvider(newProvider);
+      setShowAddModal(false);
+      setNewProvider({ name: "", email: "", specialty: "" });
+    } catch (error: any) {
+      alert(error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDeleteProvider = async (id: string) => {
+    if (window.confirm("Are you sure you want to delete this provider?")) {
+      try {
+        await deleteProvider(id);
+      } catch (error: any) {
+        alert(error.message);
+      }
+    }
+  };
 
   const filteredProviders = providers.filter(provider => {
     const matchesSearch = provider.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          provider.specialty.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesSpecialty = filterSpecialty === "All" || provider.specialty === filterSpecialty;
-    const matchesStatus = filterStatus === "All" || provider.status === filterStatus;
+    
+    const listedSpecialties = ["General Medicine", "Cardiology", "Pediatrics", "Dermatology", "Orthopedics", "Neurology"];
+    const matchesSpecialty = filterSpecialty === "All Specialties" ||
+                             (filterSpecialty === "Others" && !listedSpecialties.includes(provider.specialty)) ||
+                             provider.specialty === filterSpecialty;
+                             
+    const statusMap: any = { "Available": "AVAILABLE", "Busy": "BUSY", "Off-duty": "OFF_DUTY" };
+    const matchesStatus = filterStatus === "All Status" || provider.status === statusMap[filterStatus];
     return matchesSearch && matchesSpecialty && matchesStatus;
   });
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -24,7 +65,7 @@ export function ProvidersManagement() {
           <h2 className="text-2xl text-gray-900 mb-1">Providers Management</h2>
           <p className="text-gray-500">Manage service providers and their availability.</p>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+        <button onClick={() => setShowAddModal(true)} className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
           <UserPlus className="w-5 h-5" />
           Add Provider
         </button>
@@ -38,15 +79,15 @@ export function ProvidersManagement() {
         </div>
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
           <p className="text-sm text-gray-500 mb-1">Available</p>
-          <p className="text-2xl text-green-600">{providers.filter(p => p.status === "Available").length}</p>
+          <p className="text-2xl text-green-600">{providers.filter(p => p.status === "AVAILABLE").length}</p>
         </div>
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
           <p className="text-sm text-gray-500 mb-1">Busy</p>
-          <p className="text-2xl text-yellow-600">{providers.filter(p => p.status === "Busy").length}</p>
+          <p className="text-2xl text-yellow-600">{providers.filter(p => p.status === "BUSY").length}</p>
         </div>
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
           <p className="text-sm text-gray-500 mb-1">Off-duty</p>
-          <p className="text-2xl text-gray-600">{providers.filter(p => p.status === "Off-duty").length}</p>
+          <p className="text-2xl text-gray-600">{providers.filter(p => p.status === "OFF_DUTY").length}</p>
         </div>
       </div>
 
@@ -78,6 +119,7 @@ export function ProvidersManagement() {
                 <option>Dermatology</option>
                 <option>Orthopedics</option>
                 <option>Neurology</option>
+                <option value="Others">Others</option>
               </select>
             </div>
             <select
@@ -102,7 +144,6 @@ export function ProvidersManagement() {
               <tr>
                 <th className="text-left text-xs text-gray-500 px-6 py-4">Provider</th>
                 <th className="text-left text-xs text-gray-500 px-6 py-4">Specialty</th>
-                <th className="text-left text-xs text-gray-500 px-6 py-4">Rating</th>
                 <th className="text-left text-xs text-gray-500 px-6 py-4">Appointments</th>
                 <th className="text-left text-xs text-gray-500 px-6 py-4">Status</th>
                 <th className="text-left text-xs text-gray-500 px-6 py-4">Joined</th>
@@ -128,19 +169,13 @@ export function ProvidersManagement() {
                       {provider.specialty}
                     </span>
                   </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-1">
-                      <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                      <span className="text-sm text-gray-900">{provider.rating}</span>
-                    </div>
-                  </td>
                   <td className="px-6 py-4 text-sm text-gray-600">{provider.appointments}</td>
                   <td className="px-6 py-4">
                     <span
                       className={`px-3 py-1 text-xs rounded-full ${
-                        provider.status === "Available"
+                        provider.status === "AVAILABLE"
                           ? "bg-green-100 text-green-700"
-                          : provider.status === "Busy"
+                          : provider.status === "BUSY"
                           ? "bg-yellow-100 text-yellow-700"
                           : "bg-gray-100 text-gray-700"
                       }`}
@@ -148,22 +183,34 @@ export function ProvidersManagement() {
                       {provider.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-600">{provider.joined}</td>
+                  <td className="px-6 py-4 text-sm text-gray-600">
+                    {new Date(provider.createdAt).toLocaleDateString()}
+                  </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
                       <button
-                        onClick={() => toggleProviderStatus(provider.id)}
+                        onClick={() => toggleProviderStatus(provider.id, provider.status)}
                         className="px-3 py-1 text-xs bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors"
                       >
-                        Toggle Status
+                        Rotate Status
                       </button>
-                      <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-                        <Edit2 className="w-4 h-4" />
+                      <button 
+                        onClick={() => handleDeleteProvider(provider.id)}
+                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      >
+                        <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
                   </td>
                 </tr>
               ))}
+              {filteredProviders.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="px-6 py-10 text-center text-gray-500">
+                    No providers found matching your filters.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
@@ -173,6 +220,40 @@ export function ProvidersManagement() {
       <div className="flex items-center justify-between text-sm text-gray-600">
         <p>Showing {filteredProviders.length} of {providers.length} providers</p>
       </div>
+
+      {showAddModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-xl border border-gray-200">
+            <h3 className="text-xl font-semibold mb-4 text-gray-900">Add New Provider</h3>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                <input type="text" value={newProvider.name} onChange={e => setNewProvider({...newProvider, name: e.target.value})} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Dr. John Doe" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <input type="email" value={newProvider.email} onChange={e => setNewProvider({...newProvider, email: e.target.value})} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="doctor@clinic.com" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Specialty</label>
+                <input type="text" value={newProvider.specialty} onChange={e => setNewProvider({...newProvider, specialty: e.target.value})} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="e.g. Cardiology" />
+              </div>
+            </div>
+            <div className="flex justify-end gap-3 mt-6">
+              <button onClick={() => setShowAddModal(false)} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">Cancel</button>
+              <button 
+                onClick={handleAddProvider} 
+                disabled={isSubmitting}
+                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 flex items-center gap-2"
+              >
+                {isSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
+                {isSubmitting ? "Adding..." : "Add Provider"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
