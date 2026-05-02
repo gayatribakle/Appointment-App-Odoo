@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import Navbar from '../components/Navbar';
 import AppointmentDetailsModal from '../components/AppointmentDetailsModal';
@@ -15,9 +15,21 @@ const TABS = ['All', 'Upcoming', 'Completed', 'Cancelled'];
 
 export default function MyAppointments() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState('All');
   const [selectedApt, setSelectedApt] = useState(null);
   const { appointments, cancelAppointment } = useAppointments();
+
+  useEffect(() => {
+    if (location.state?.openAppointmentId) {
+      const apt = appointments.find(a => a.id === location.state.openAppointmentId);
+      if (apt) {
+        setSelectedApt(apt);
+        // Clear state so it doesn't reopen on refresh
+        navigate(location.pathname, { replace: true, state: {} });
+      }
+    }
+  }, [location.state, appointments, navigate]);
 
   const handleCancel = (id) => {
     if (window.confirm('Are you confirm cancelling the appointment?')) {
